@@ -1,0 +1,74 @@
+name: Deploy and release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  check:
+    uses: ./.github/workflows/pr-check.yml
+    permissions:
+      contents: write
+
+  build-bundle:
+    needs: [check]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Node setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Build artifacts
+        shell: bash
+        run: ./.github/scripts/bundle-versioning.sh ./artifacts
+
+      - name: List artifact contents
+        run: ls -R ./artifacts
+
+      - name: Cache artifacts
+        uses: actions/cache@v3
+        with:
+          path: ./artifacts
+          key: artifacts-cache
+          enableCrossOsArchive: true
+
+  create-release:
+    needs: [check, build-bundle]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Restore artifacts
+        uses: actions/cache@v3
+        with:
+          path: ./artifacts
+          key: artifacts-cache
+
+      - name: Zip artifacts
+        shell: bash
+        run: |
+          cd ./artifacts
+          tar -zcvf ../bundles.tar.gz .
+
+      - name: Get tag name
+        run: echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.TAG }}
+          files: |
+            ./bundles.tar.gz

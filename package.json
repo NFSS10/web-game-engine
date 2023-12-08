@@ -1,0 +1,68 @@
+{
+    "name": "@nfss10/web-game-engine",
+    "version": "0.0.0",
+    "description": "Just a simple wannabe game engine to help me quickly prototype and showcase some little fun projects to my friends ",
+    "type": "module",
+    "main": "dist/cjs/game-engine.js",
+    "module": "dist/esm/game-engine.js",
+    "types": "dist/types.d.ts",
+    "scripts": {
+        "lint": "eslint .",
+        "lint-fix": "eslint . --fix",
+        "prettier": "prettier --write \"**/*.+(ts|js|json|css|md)\"",
+        "prettier-check": "prettier --check \"**/*.+(ts|js|json|css|md)\"",
+        "pretty": "npm run prettier && npm run lint-fix",
+        "type-check": "tsc -p tsconfig.json -noEmit",
+        "prepare": "npm run build",
+        "build": "rimraf ./dist && npm run type-check && rollup -c",
+        "build-dev": "ENV=DEV npm run build",
+        "build-prod": "ENV=PROD npm run build",
+        "watch": "rimraf ./dist && npm run type-check && ENV=DEV rollup -c -w",
+        "watch-cjs": "BUILD_TARGET=CJS npm run watch",
+        "watch-esm": "BUILD_TARGET=ESM npm run watch",
+        "watch-bundle": "BUILD_TARGET=BUNDLE npm run watch",
+        "serve": "http-server --cors -a localhost ./dist/bundle"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NFSS10/web-game-engine.git"
+    },
+    "keywords": [
+        "Web",
+        "Game",
+        "3d",
+        "Engine",
+        "Three.js",
+        "WebGL"
+    ],
+    "author": "NFSS10",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/NFSS10/web-game-engine/issues"
+    },
+    "homepage": "https://github.com/NFSS10/web-game-engine#readme",
+    "files": [
+        "dist/esm/**/*.js",
+        "dist/cjs/**/*.js",
+        "dist/types.d.ts"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-replace": "^5.0.5",
+        "@rollup/plugin-terser": "^0.4.4",
+        "@typescript-eslint/eslint-plugin": "^6.13.2",
+        "@typescript-eslint/parser": "^6.13.2",
+        "esbuild": "^0.19.8",
+        "eslint": "^8.55.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.0.1",
+        "http-server": "^14.1.1",
+        "prettier": "^3.1.0",
+        "rimraf": "^5.0.5",
+        "rollup": "^4.7.0",
+        "rollup-plugin-dts": "^6.1.0",
+        "rollup-plugin-esbuild": "^6.1.0",
+        "typescript": "^5.3.3"
+    }
+}

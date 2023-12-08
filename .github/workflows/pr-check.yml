@@ -1,0 +1,38 @@
+name: Pull Request check
+
+on:
+  pull_request:
+  push:
+    branches: master
+  workflow_call:
+
+jobs:
+  check:
+    if: ${{ github.base_ref == 'master' }} || ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        node: [18, 20]
+    name: Node ${{ matrix.node }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Node setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Prettier check
+        run: yarn prettier-check
+
+      - name: Eslint check
+        run: yarn lint
+
+      - name: Build project
+        run: yarn build
