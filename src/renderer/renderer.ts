@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
-import { type Camera } from "../camera";
+import { type Camera } from "@src/camera";
+import { type Scene } from "@src/scene";
 
 type RendererOptions = {
     antialias?: boolean;
@@ -26,8 +27,8 @@ class Renderer {
         element.appendChild(this.#renderer.domElement);
     }
 
-    render(scene: THREE.Scene, camera: Camera): void {
-        this.#renderer.render(scene, camera.camera);
+    render(scene: Scene, camera: Camera): void {
+        this.#renderer.render(scene.scene, camera.camera);
     }
 }
 
