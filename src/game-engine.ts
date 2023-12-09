@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
 import { Renderer } from "@src/renderer";
-import { ModuleLoader } from "@src/loaders";
+import { ModuleLoader, ModuleType } from "@src/loaders";
 
 class GameEngine {
     VERSION = "<%VERSION%>";
@@ -30,7 +30,7 @@ class GameEngine {
         return this.#element;
     }
 
-    async loadModule(name: string): Promise<Module> {
+    async loadModule(name: ModuleType): Promise<Module> {
         const module = await ModuleLoader.loadModule(name);
         return module;
     }
