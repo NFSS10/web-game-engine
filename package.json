@@ -9,8 +9,8 @@
     "scripts": {
         "lint": "eslint .",
         "lint-fix": "eslint . --fix",
-        "prettier": "prettier --write \"**/*.+(ts|js|json|css|md)\"",
-        "prettier-check": "prettier --check \"**/*.+(ts|js|json|css|md)\"",
+        "prettier": "prettier --write \"**/*.+(ts|js|json|css|md|html)\"",
+        "prettier-check": "prettier --check \"**/*.+(ts|js|json|css|md|html)\"",
         "pretty": "npm run prettier && npm run lint-fix",
         "type-check": "tsc -p tsconfig.json -noEmit",
         "prepare": "npm run build",
