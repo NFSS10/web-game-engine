@@ -27,6 +27,11 @@ class EntityBuilder extends Module {
         const material = new THREE.MeshNormalMaterial();
         const mesh = new THREE.Mesh(geometry, material);
 
+        // TODO: remove this test code
+        mesh.position.z = -5;
+        mesh.rotateX(0.35);
+        mesh.rotateY(0.35);
+
         const entity = new Entity(id, mesh);
         return entity;
     }
