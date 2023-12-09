@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
 import { Renderer } from "@src/renderer";
-import { ModuleLoader } from "@src/utils";
+import { ModuleLoader } from "@src/loaders";
 
 class GameEngine {
     VERSION = "<%VERSION%>";
