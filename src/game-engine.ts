@@ -1,9 +1,8 @@
-import * as THREE from "three";
-
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
 import { Renderer } from "@src/renderer";
 import { ModuleLoader, ModuleType } from "@src/loaders";
+import { Scene } from "./scene";
 
 class GameEngine {
     VERSION = "<%VERSION%>";
@@ -12,7 +11,7 @@ class GameEngine {
     #element: HTMLElement;
     #renderer: Renderer;
     #camera: Camera;
-    #scene: THREE.Scene;
+    #scene: Scene;
 
     constructor(width?: number, height?: number) {
         width = width ?? 768;
@@ -21,9 +20,8 @@ class GameEngine {
         this.#buildElement();
 
         this.#camera = new Camera(45, width / height);
+        this.#scene = new Scene("default");
         this.#renderer = new Renderer(this.#element, width, height);
-
-        this.#testScene();
     }
 
     get canvas(): HTMLElement {
@@ -44,6 +42,10 @@ class GameEngine {
         this.#running = false;
     }
 
+    setScene(scene: Scene): void {
+        this.#scene = scene;
+    }
+
     #buildElement(): void {
         this.#element = document.createElement("game-window");
     }
@@ -51,22 +53,10 @@ class GameEngine {
     #loop(): void {
         if (!this.#running) return;
 
+        console.log("Looping");
         this.#renderer.render(this.#scene, this.#camera);
 
         requestAnimationFrame(() => this.#loop());
-    }
-
-    #testScene(): void {
-        this.#scene = new THREE.Scene();
-
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshNormalMaterial();
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.z = -5;
-        cube.rotateX(0.35);
-        cube.rotateY(0.35);
-
-        this.#scene.add(cube);
     }
 }
 
