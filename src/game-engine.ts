@@ -53,7 +53,6 @@ class GameEngine {
     #loop(): void {
         if (!this.#running) return;
 
-        console.log("Looping");
         this.#renderer.render(this.#scene, this.#camera);
 
         requestAnimationFrame(() => this.#loop());
