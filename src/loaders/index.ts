@@ -1,3 +1,3 @@
-import { ModuleLoader } from "./module-loader";
+import { ModuleLoader, ModuleType } from "./module-loader";
 
-export { ModuleLoader };
+export { ModuleLoader, ModuleType };
