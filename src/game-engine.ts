@@ -1,7 +1,9 @@
 import * as THREE from "three";
 
+import { Module } from "../modules";
 import { Camera } from "./camera";
 import { Renderer } from "./renderer";
+import { ModuleLoader } from "./utils";
 
 class GameEngine {
     VERSION = "<%VERSION%>";
@@ -26,6 +28,11 @@ class GameEngine {
 
     get canvas(): HTMLElement {
         return this.#element;
+    }
+
+    async loadModule(name: string): Promise<Module> {
+        const module = await ModuleLoader.loadModule(name);
+        return module;
     }
 
     start(): void {
