@@ -1,5 +1,9 @@
 class Scene {
-    constructor() {}
+    #id: string;
+
+    constructor(id: string) {
+        this.#id = id;
+    }
 }
 
 export { Scene };

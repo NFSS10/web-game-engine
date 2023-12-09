@@ -6,8 +6,8 @@ class SceneBuilder extends Module {
         super();
     }
 
-    createScene(): Scene {
-        const scene = new Scene();
+    createScene(id: string): Scene {
+        const scene = new Scene(id);
         return scene;
     }
 }
