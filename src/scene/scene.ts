@@ -21,6 +21,7 @@ class Scene {
     }
 
     addEntity(entity: Entity): Scene {
+        this.#scene.add(entity.object);
         this.#entities.push(entity);
         return this;
     }
