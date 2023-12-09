@@ -23,7 +23,7 @@ abstract class ModuleLoader {
     static async #loadSceneBuilder(): Promise<SceneBuilder> {
         if (this.#sceneBuilder) return this.#sceneBuilder;
 
-        const module = await import("../../../../modules/scene-builder");
+        const module = await import("../../../modules/scene-builder");
         this.#sceneBuilder = new module.SceneBuilder();
         return this.#sceneBuilder;
     }
@@ -31,7 +31,7 @@ abstract class ModuleLoader {
     static async #loadEntityBuilder(): Promise<SceneBuilder> {
         if (this.#entityBuilder) return this.#entityBuilder;
 
-        const module = await import("../../../../modules/entity-builder");
+        const module = await import("../../../modules/entity-builder");
         this.#entityBuilder = new module.EntityBuilder();
         return this.#entityBuilder;
     }
