@@ -1,4 +1,5 @@
 /* eslint-disable */
+import tsConfigPaths from "rollup-plugin-tsconfig-paths";
 import replace from "@rollup/plugin-replace";
 import esbuild from "rollup-plugin-esbuild";
 import terser from "@rollup/plugin-terser";
@@ -31,7 +32,7 @@ const terserOpts = {
 // ES Modules step
 const esmStep = {
     input: input,
-    plugins: [replace(replaceOpts), esbuild(), env === "PROD" ? terser(terserOpts) : undefined],
+    plugins: [tsConfigPaths(), replace(replaceOpts), esbuild(), env === "PROD" ? terser(terserOpts) : undefined],
     output: {
         format: "es",
         dir: "dist/esm",
@@ -43,6 +44,7 @@ const esmStep = {
 const cjsStep = {
     input: input,
     plugins: [
+        tsConfigPaths(),
         replace(replaceOpts),
         esbuild({ tsconfig: "tsconfig.cjs.json" }),
         env === "PROD" ? terser(terserOpts) : undefined
@@ -57,7 +59,13 @@ const cjsStep = {
 // Browser bundle step
 const bundleStep = {
     input: input,
-    plugins: [replace(replaceOpts), esbuild(), nodeResolve(), env === "PROD" ? terser(terserOpts) : undefined],
+    plugins: [
+        tsConfigPaths(),
+        replace(replaceOpts),
+        esbuild(),
+        nodeResolve(),
+        env === "PROD" ? terser(terserOpts) : undefined
+    ],
     output: {
         format: "es",
         dir: "dist/bundle",

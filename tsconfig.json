@@ -1,5 +1,10 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@modules": ["modules"],
+            "@src/*": ["./src/*"]
+        },
         "outDir": "./dist/esm",
         "module": "es2022",
         "target": "es2020",
@@ -15,6 +20,6 @@
         "noImplicitReturns": true,
         "skipLibCheck": true
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "modules/**/*"],
     "exclude": ["node_modules"]
 }
