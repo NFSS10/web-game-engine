@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import { Module } from "../modules";
-import { Camera } from "./camera";
-import { Renderer } from "./renderer";
-import { ModuleLoader } from "./utils";
+import { Module } from "@modules";
+import { Camera } from "@src/camera";
+import { Renderer } from "@src/renderer";
+import { ModuleLoader } from "@src/utils";
 
 class GameEngine {
     VERSION = "<%VERSION%>";

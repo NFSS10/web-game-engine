@@ -1,4 +1,4 @@
-import { Module, SceneBuilder } from "../../../../modules";
+import { Module, SceneBuilder } from "@modules";
 
 abstract class ModuleLoader {
     static SUPPORTED_MODULES = ["scene-builder"];

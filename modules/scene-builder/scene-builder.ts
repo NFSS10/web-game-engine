@@ -1,5 +1,5 @@
-import { Scene } from "../../src/scene";
-import { Module } from "../module";
+import { Module } from "@modules";
+import { Scene } from "@src/scene";
 
 class SceneBuilder extends Module {
     constructor() {

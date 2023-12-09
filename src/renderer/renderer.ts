@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { type Camera } from "../camera";
+import { type Camera } from "@src/camera";
 
 type RendererOptions = {
     antialias?: boolean;
