@@ -9,8 +9,8 @@
     "scripts": {
         "lint": "eslint .",
         "lint-fix": "eslint . --fix",
-        "prettier": "prettier --write \"**/*.+(ts|js|json|css|md)\"",
-        "prettier-check": "prettier --check \"**/*.+(ts|js|json|css|md)\"",
+        "prettier": "prettier --write \"**/*.+(ts|js|json|css|md|html)\"",
+        "prettier-check": "prettier --check \"**/*.+(ts|js|json|css|md|html)\"",
         "pretty": "npm run prettier && npm run lint-fix",
         "type-check": "tsc -p tsconfig.json -noEmit",
         "prepare": "npm run build",
@@ -46,11 +46,14 @@
         "dist/cjs/**/*.js",
         "dist/types.d.ts"
     ],
-    "dependencies": {},
+    "dependencies": {
+        "three": "^0.159.0"
+    },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-replace": "^5.0.5",
         "@rollup/plugin-terser": "^0.4.4",
+        "@types/three": "^0.159.0",
         "@typescript-eslint/eslint-plugin": "^6.13.2",
         "@typescript-eslint/parser": "^6.13.2",
         "esbuild": "^0.19.8",

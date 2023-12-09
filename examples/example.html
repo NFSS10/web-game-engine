@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Example</title>
+    </head>
+
+    <body>
+        <div class="buttons">
+            <button id="start">Start</button>
+            <button id="stop">Stop</button>
+        </div>
+    </body>
+
+    <style>
+        .buttons {
+            margin: 0px 0px 8px 0px;
+        }
+
+        .buttons > button {
+            cursor: pointer;
+        }
+    </style>
+
+    <script type="module">
+        import { GameEngine } from "http://localhost:8080/game-engine.js";
+
+        const gameEngine = new GameEngine();
+        console.info("Version:", gameEngine.VERSION);
+
+        // adds the canvas to the page
+        document.body.appendChild(gameEngine.canvas);
+
+        // controls the game engine
+        document.getElementById("start").addEventListener("click", () => gameEngine.start());
+        document.getElementById("stop").addEventListener("click", () => gameEngine.stop());
+    </script>
+</html>
