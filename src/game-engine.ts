@@ -1,14 +1,19 @@
+import * as THREE from "three";
+
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
-import { Renderer } from "@src/renderer";
+import { Entity } from "@src/entity";
 import { ModuleLoader, ModuleType } from "@src/loaders";
-import { Scene } from "./scene";
+import { Physics } from "@src/physics";
+import { Renderer } from "@src/renderer";
+import { Scene } from "@src/scene";
 
 class GameEngine {
     VERSION = "<%VERSION%>";
 
     #running = false;
     #element: HTMLElement;
+    #clock: THREE.Clock;
     #renderer: Renderer;
     #camera: Camera;
     #scene: Scene;
@@ -17,8 +22,11 @@ class GameEngine {
         width = width ?? 768;
         height = height ?? 768;
 
+        await Physics.init();
+
         this.#buildElement();
 
+        this.#clock = new THREE.Clock();
         this.#camera = new Camera(45, width / height);
         this.#scene = new Scene("default");
         this.#renderer = new Renderer(this.#element, width, height);
@@ -52,6 +60,9 @@ class GameEngine {
 
     #loop(): void {
         if (!this.#running) return;
+
+        const dt = this.#clock.getDelta();
+        this.#scene.tickPhysics(dt);
 
         this.#renderer.render(this.#scene, this.#camera);
 
