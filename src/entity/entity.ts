@@ -1,9 +1,9 @@
-type PhysicsBody = any; // TODO improve types
+import { Physics, type Body } from "@src/physics";
 
 class Entity {
     #id: string;
     #object: THREE.Object3D;
-    #body?: PhysicsBody;
+    #body?: Body;
 
     constructor(id: string, object: THREE.Object3D) {
         this.#id = id;
@@ -18,12 +18,12 @@ class Entity {
         return this.#object;
     }
 
-    get body(): PhysicsBody | undefined {
+    get body(): Body | undefined {
         return this.#body;
     }
 
     enablePhysics(): Entity {
-        // TODO:
+        this.#body = Physics.createBody(this.#object);
         return this;
     }
 
