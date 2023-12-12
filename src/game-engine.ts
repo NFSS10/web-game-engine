@@ -2,7 +2,6 @@ import * as THREE from "three";
 
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
-import { Entity } from "@src/entity";
 import { ModuleLoader, ModuleType } from "@src/loaders";
 import { Physics } from "@src/physics";
 import { Renderer } from "@src/renderer";
