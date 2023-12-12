@@ -13,7 +13,7 @@ class GameEngine {
     #camera: Camera;
     #scene: Scene;
 
-    constructor(width?: number, height?: number) {
+    async init(width?: number, height?: number): Promise<void> {
         width = width ?? 768;
         height = height ?? 768;
 
