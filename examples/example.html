@@ -6,18 +6,25 @@
 
     <body></body>
 
-    <style></style>
+    <style>
+        html {
+            background-color: #161616;
+        }
+    </style>
 
     <script type="module">
         import { GameEngine } from "http://localhost:8080/game-engine.js";
 
         const gameEngine = new GameEngine();
-        await gameEngine.init();
         console.info("Version:", gameEngine.VERSION);
+
+        // initializes the game engine
+        await gameEngine.init();
 
         // adds the canvas to the page
         document.body.appendChild(gameEngine.canvas);
 
+        // loads builder modules
         const [sceneBuilder, entityBuilder] = await Promise.all([
             gameEngine.loadModule("scene-builder"),
             gameEngine.loadModule("entity-builder")
