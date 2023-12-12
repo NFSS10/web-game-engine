@@ -31,6 +31,20 @@ class Scene {
         return this;
     }
 
+    removeEntity(id: string): void {
+        const index = this.#entities.findIndex(entity => entity.id === id);
+        if (index === -1) return;
+
+        const entity = this.#entities[index] as Entity;
+
+        if (entity.body) this.#world.removeRigidBody(entity.body);
+        this.#scene.remove(entity.object);
+
+        // destroys the entity
+        entity.destroy();
+        this.#entities.splice(index, 1);
+    }
+
     tickPhysics(dt: number): void {
         dt = dt * this.#timeScale;
         Physics.tickWorld(this.#world, this.#entities, dt);
