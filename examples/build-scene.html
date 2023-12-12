@@ -20,6 +20,7 @@
         import { GameEngine } from "http://localhost:8080/game-engine.js";
 
         const gameEngine = new GameEngine();
+        await gameEngine.init();
         console.info("Version:", gameEngine.VERSION);
 
         // adds the canvas to the page
