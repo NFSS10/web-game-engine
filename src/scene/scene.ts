@@ -31,6 +31,11 @@ class Scene {
         return this;
     }
 
+    tickPhysics(dt: number): void {
+        dt = dt * this.#timeScale;
+        Physics.tickWorld(this.#world, this.#entities, dt);
+    }
+
     destroy(): void {
         this.#entities.forEach(entity => entity.destroy());
         this.#entities = [];
