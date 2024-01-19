@@ -1,4 +1,4 @@
-import { Physics, type Body } from "@src/physics";
+import { Physics, type Body, type BodyOptions } from "@src/physics";
 
 class Entity {
     #id: string;
@@ -22,8 +22,8 @@ class Entity {
         return this.#body;
     }
 
-    enablePhysics(): Entity {
-        this.#body = Physics.createBody(this.#object);
+    enablePhysics(options?: BodyOptions): Entity {
+        this.#body = Physics.createBody(this.#object, options);
         return this;
     }
 
