@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { Entity } from "@src/entity";
 import { type World, type Body, type BodyOptions } from "./types";
+import { BodySimulationState } from "./enums";
 
 abstract class Physics {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,9 +69,7 @@ abstract class Physics {
 
         rigidBody.setFriction(friction);
 
-        // TODO
-        const DISABLE_DEACTIVATION = 4;
-        rigidBody.setActivationState(DISABLE_DEACTIVATION);
+        rigidBody.setActivationState(BodySimulationState.ACTIVE);
 
         return rigidBody as Body;
     }
