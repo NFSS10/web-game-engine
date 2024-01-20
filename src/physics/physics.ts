@@ -8,12 +8,14 @@ import { BodySimulationState } from "./enums";
 abstract class Physics {
     static #Ammo?: Ammo;
 
-    static auxTransform = new THREE.Matrix4();
+    static auxTransform: Ammo.btTransform;
 
     static async init(): Promise<void> {
         const module = await import("https://cdn-static-nfss10.netlify.app/libs/ammo.js/ammo.js");
         const lib = module.default;
-        this.#Ammo = await lib();
+        this.#Ammo = (await lib()) as Ammo;
+
+        this.auxTransform = new this.#Ammo.btTransform();
     }
 
     static createWorld(gravity?: number): World {
@@ -83,7 +85,6 @@ abstract class Physics {
 
         world.stepSimulation(dt, 10);
 
-        const transform = new this.#Ammo.btTransform();
         entities.forEach(entity => {
             const body = entity.body;
             if (!body) return;
@@ -91,9 +92,9 @@ abstract class Physics {
             const ms = body.getMotionState();
             if (!ms) return;
 
-            ms.getWorldTransform(transform);
-            const position = transform.getOrigin();
-            const quaternion = transform.getRotation();
+            ms.getWorldTransform(this.auxTransform);
+            const position = this.auxTransform.getOrigin();
+            const quaternion = this.auxTransform.getRotation();
 
             const mesh = entity.object;
             mesh.position.set(position.x(), position.y(), position.z());
