@@ -1,12 +1,12 @@
 import * as THREE from "three";
+import { type Ammo } from "ammo";
 
 import { Entity } from "@src/entity";
 import { type World, type Body, type BodyOptions } from "./types";
 import { BodySimulationState } from "./enums";
 
 abstract class Physics {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static #Ammo?: any; // TODO improve this type
+    static #Ammo?: Ammo;
 
     static auxTransform = new THREE.Matrix4();
 
@@ -17,6 +17,8 @@ abstract class Physics {
     }
 
     static createWorld(gravity?: number): World {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
         gravity = gravity ?? -9.82;
 
         const collisionConfiguration = new this.#Ammo.btDefaultCollisionConfiguration();
@@ -36,6 +38,8 @@ abstract class Physics {
     }
 
     static createBody(object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
         const size = this.#getBoundingBoxSize(object);
 
         const mass = options?.mass ?? 1;
@@ -75,6 +79,8 @@ abstract class Physics {
     }
 
     static tickWorld(world: World, entities: Entity[], dt: number): void {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
         world.stepSimulation(dt, 10);
 
         const transform = new this.#Ammo.btTransform();
