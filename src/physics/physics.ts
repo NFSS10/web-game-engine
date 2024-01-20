@@ -85,7 +85,9 @@ abstract class Physics {
 
         world.stepSimulation(dt, 10);
 
-        entities.forEach(entity => {
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i] as Entity;
+
             const body = entity.body;
             if (!body) return;
 
@@ -99,7 +101,7 @@ abstract class Physics {
             const mesh = entity.object;
             mesh.position.set(position.x(), position.y(), position.z());
             mesh.quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
-        });
+        }
     }
 
     static #getBoundingBoxSize(object: THREE.Object3D): THREE.Vector3 {
