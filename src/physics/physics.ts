@@ -75,7 +75,7 @@ abstract class Physics {
 
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
 
-        return rigidBody as Body;
+        return rigidBody;
     }
 
     static tickWorld(world: World, entities: Entity[], dt: number): void {

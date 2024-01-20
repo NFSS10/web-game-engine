@@ -1,5 +1,5 @@
 declare module "ammo" {
-    export namespace AmmoLib {
+    export namespace Ammo {
         export class btDefaultCollisionConfiguration {}
 
         export class btPersistentManifold {}
@@ -17,7 +17,9 @@ declare module "ammo" {
 
         export class btCollisionConfiguration {}
 
-        export class btDbvtBroadphase {}
+        export class btBroadphaseInterface {}
+
+        export class btDbvtBroadphase extends btBroadphaseInterface {}
 
         export class btBroadphaseProxy {}
 
@@ -29,13 +31,19 @@ declare module "ammo" {
 
         export class btDiscreteDynamicsWorld extends btDynamicsWorld {
             constructor(
-                dispatcher: btCollisionDispatcher,
-                broadphase: btDbvtBroadphase,
-                solver: btConstraintSolver,
+                dispatcher: btDispatcher,
+                pairCache: btBroadphaseInterface,
+                constraintSolver: btConstraintSolver,
                 collisionConfiguration: btCollisionConfiguration
             );
             setGravity(gravity: btVector3): void;
             getGravity(): btVector3;
+            addRigidBody(body: btRigidBody): void;
+            addRigidBody(body: btRigidBody, group: number, mask: number): void;
+            removeRigidBody(body: btRigidBody): void;
+            addConstraint(constraint: btTypedConstraint, disableCollisionsBetweenLinkedBodies?: boolean): void;
+            removeConstraint(constraint: btTypedConstraint): void;
+            stepSimulation(timeStep: number, maxSubSteps?: number, fixedTimeStep?: number): number;
         }
 
         export class btVector3 {
@@ -201,6 +209,14 @@ declare module "ammo" {
             setGravity(acceleration: btVector3): void;
             getBroadphaseProxy(): btBroadphaseProxy;
         }
+
+        export class btTypedConstraint {
+            enableFeedback(needsFeedback: boolean): void;
+            getBreakingImpulseThreshold(): number;
+            setBreakingImpulseThreshold(threshold: number): void;
+            getParam(num: number, axis: number): number;
+            setParam(num: number, value: number, axis: number): void;
+        }
     }
-    export type Ammo = typeof AmmoLib;
+    export type Ammo = typeof Ammo;
 }

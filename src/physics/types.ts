@@ -1,8 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type World = any; // TODO improve types
+import { type Ammo } from "ammo";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Body = any; // TODO improve types
+type World = Ammo.btDiscreteDynamicsWorld;
+
+type Body = Ammo.btRigidBody;
 
 type BodyOptions = {
     mass: number;
