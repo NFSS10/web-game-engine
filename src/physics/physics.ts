@@ -77,6 +77,12 @@ abstract class Physics {
 
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
 
+        // create a unique ID
+        const randomNumber = Math.floor(Math.random() * 100000000);
+        const idStr = `${Date.now()}${randomNumber}`.slice(4);
+        const id = parseInt(idStr);
+        rigidBody.setUserPointer(id);
+
         return rigidBody;
     }
 
