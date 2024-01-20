@@ -9,7 +9,7 @@ Just a simple wannabe game engine to help me quickly prototype and showcase some
     import { GameEngine } from "http://localhost:8080/game-engine.js";
 
     const engine = new GameEngine();
-    console.log("Version:", engine.VERSION);
+    console.info("Version:", engine.VERSION);
 </script>
 ```
 

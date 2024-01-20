@@ -4,20 +4,11 @@
         <title>Example</title>
     </head>
 
-    <body>
-        <div class="buttons">
-            <button id="start">Start</button>
-            <button id="stop">Stop</button>
-        </div>
-    </body>
+    <body></body>
 
     <style>
-        .buttons {
-            margin: 0px 0px 8px 0px;
-        }
-
-        .buttons > button {
-            cursor: pointer;
+        html {
+            background-color: #161616;
         }
     </style>
 
@@ -27,11 +18,41 @@
         const gameEngine = new GameEngine();
         console.info("Version:", gameEngine.VERSION);
 
+        // initializes the game engine
+        await gameEngine.init();
+
         // adds the canvas to the page
         document.body.appendChild(gameEngine.canvas);
 
-        // controls the game engine
-        document.getElementById("start").addEventListener("click", () => gameEngine.start());
-        document.getElementById("stop").addEventListener("click", () => gameEngine.stop());
+        // loads builder modules
+        const [sceneBuilder, entityBuilder] = await Promise.all([
+            gameEngine.loadModule("scene-builder"),
+            gameEngine.loadModule("entity-builder")
+        ]);
+
+        // creates a new scene
+        const scene = sceneBuilder.createScene();
+
+        // creates a cube
+        const entity = entityBuilder.createPrimitive("cube", "my-id");
+
+        // makes the entity a physical object
+        entity.enablePhysics();
+
+        // adds the newly created entity to the scene
+        scene.addEntity(entity);
+
+        // creates a static floor
+        const floor = entityBuilder.createPrimitive("cube", "my-foor-id");
+        floor.object.scale.set(50, 0.1, 50); // scales the floor
+        floor.object.position.set(0, -3, 0); // positions the floor
+        floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
+        scene.addEntity(floor);
+
+        // sets the new scene
+        gameEngine.setScene(scene);
+
+        // starts the game loop
+        gameEngine.start();
     </script>
 </html>

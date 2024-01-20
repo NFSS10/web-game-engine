@@ -20,6 +20,6 @@
         "noImplicitReturns": true,
         "skipLibCheck": true
     },
-    "include": ["src/**/*", "modules/**/*"],
+    "include": ["declarations.d.ts", "src/**/*", "modules/**/*", "types/**/*"],
     "exclude": ["node_modules"]
 }
