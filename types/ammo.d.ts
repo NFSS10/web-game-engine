@@ -2,7 +2,12 @@ declare module "ammo" {
     export namespace Ammo {
         export class btDefaultCollisionConfiguration {}
 
-        export class btPersistentManifold {}
+        export class btPersistentManifold {
+            getBody0(): btCollisionObject;
+            getBody1(): btCollisionObject;
+            getNumContacts(): number;
+            getContactPoint(index: number): btManifoldPoint;
+        }
 
         export class btConstraintSolver {}
 
@@ -25,7 +30,16 @@ declare module "ammo" {
 
         export class btSequentialImpulseConstraintSolver {}
 
-        export class btCollisionWorld {}
+        export class btCollisionWorld {
+            getDispatcher(): btDispatcher;
+        }
+
+        export class btManifoldPoint {
+            getPositionWorldOnA(): btVector3;
+            getPositionWorldOnB(): btVector3;
+            getAppliedImpulse(): number;
+            getDistance(): number;
+        }
 
         export class btDynamicsWorld extends btCollisionWorld {}
 
