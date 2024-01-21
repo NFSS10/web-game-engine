@@ -12,13 +12,13 @@ class PrimitiveEntity extends Entity {
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         super(object, options);
 
-        this.#auxTransform = new Physics.Ammo.btTransform();   
+        this.#auxTransform = new Physics.Ammo.btTransform();
     }
 
     tickBodies(): void {
         for (let i = 0; i < this.bodies.length; i++) {
             const body = this.bodies[i] as Body;
-            
+
             const ms = body.getMotionState();
             if (!ms) continue;
 
@@ -36,7 +36,7 @@ class PrimitiveEntity extends Entity {
         super.destroy();
 
         Physics.Ammo.destroy(this.#auxTransform);
-        // @ts-expect-error
+        // @ts-expect-error Ensure this is destroyed
         this.#auxTransform = null;
     }
 }

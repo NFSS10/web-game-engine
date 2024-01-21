@@ -9,7 +9,7 @@ class World {
     #entities: Entity[];
     #bodies: Body[];
     #physicsWorld: Ammo.btDiscreteDynamicsWorld;
- 
+
     constructor(gravity?: number) {
         this.#gravity = gravity ?? -9.82;
         this.#entities = [];
@@ -41,30 +41,28 @@ class World {
 
     addEntity(entity: Entity): void {
         const foundEntity = this.#entities.find(e => e.id === entity.id);
-        
+
         // if the entity is not yet added to the world, simply add it
         if (!foundEntity) {
             this.#entities.push(entity);
             entity.bodies.forEach(body => {
                 this.#bodies.push(body);
-                this.#physicsWorld.addRigidBody(body)
+                this.#physicsWorld.addRigidBody(body);
             });
             return;
         }
-        
+
         // otherwise we need to check if our entity contains new bodies
         // that need to be added to the world
         for (let i = 0; i < entity.bodies.length; i++) {
             const body = entity.bodies[i] as Body;
-            
+
             // check if the body is already present in the world
             let isBodyAlreadyAdded = false;
             for (let j = 0; j < this.#bodies.length; j++) {
                 const worldBody = this.#bodies[j]!;
                 isBodyAlreadyAdded = worldBody === body;
-                if (isBodyAlreadyAdded) {
-                    break;
-                }
+                if (isBodyAlreadyAdded) break;
             }
 
             // the body is not present in the world, so we add it
@@ -78,7 +76,7 @@ class World {
     removeEntity(entity: Entity): void {
         // remove the entity's bodies from the world
         entity.bodies.forEach(body => this.#removeBodyFromWorld(body));
-        
+
         // remove the entity from the world
         const index = this.#entities.findIndex(e => e.id === entity.id);
         this.#entities.splice(index, 1);

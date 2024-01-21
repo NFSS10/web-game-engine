@@ -37,14 +37,14 @@ abstract class Physics {
         );
         physicsWorld.setGravity(new this.#Ammo.btVector3(0, gravity, 0));
 
-        return physicsWorld
+        return physicsWorld;
     }
 
     // TODO accept shape instead of calculating from the object
     static createBody(object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
-        const size =  ObjectUtils.getBoundingBoxSize(object);
+        const size = ObjectUtils.getBoundingBoxSize(object);
 
         const mass = options?.mass ?? 1;
         const friction = options?.friction ?? 1;
@@ -78,7 +78,7 @@ abstract class Physics {
         rigidBody.setFriction(friction);
 
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
-       
+
         return rigidBody;
     }
 }

@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 abstract class ObjectUtils {
     static getBoundingBoxSize(object: THREE.Object3D): THREE.Vector3 {

@@ -1,3 +1,3 @@
-import { ObjectUtils} from "./object-utils"
+import { ObjectUtils } from "./object-utils";
 
 export { ObjectUtils };

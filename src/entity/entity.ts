@@ -4,7 +4,7 @@ import { Physics } from "@src/physics";
 import { type Body, type BodyOptions } from "@src/physics/types";
 import { Scene } from "@src/scene";
 import { Utils } from "@src/utils";
-import {type EntityOptions } from "./types";
+import { type EntityOptions } from "./types";
 
 class Entity {
     #id: string;
@@ -58,7 +58,7 @@ class Entity {
         return this;
     }
 
-    destroy(): void {    
+    destroy(): void {
         // remove references before destroying
         if (this.sceneRef) {
             this.sceneRef.removeEntity(this.#id);
@@ -68,10 +68,10 @@ class Entity {
         this.#bodies.forEach(body => Physics.Ammo.destroy(body));
         this.#bodies.length = 0;
 
-        // @ts-expect-error
+        // @ts-expect-error Ensure this is destroyed
         this.#object = null; // TODO: fully dispose the object
-        
-        // @ts-expect-error
+
+        // @ts-expect-error Ensure this is destroyed
         this.#id = null;
     }
 
@@ -83,7 +83,7 @@ class Entity {
         if (this.bodies.length > 0) return;
 
         console.info(`Generating default body for entity: "${this.#id}"`);
-        const body =  Physics.createBody(this.#object, options);
+        const body = Physics.createBody(this.#object, options);
         this.#bodies.push(body);
     }
 }

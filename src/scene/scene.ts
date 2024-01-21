@@ -27,7 +27,7 @@ class Scene {
     addEntity(entity: Entity): Scene {
         // avoid adding the same entity twice
         if (this.#entities.find(e => e.id === entity.id)) return this;
-     
+
         entity.sceneRef = this;
         this.#entities.push(entity);
         this.#scene.add(entity.object);

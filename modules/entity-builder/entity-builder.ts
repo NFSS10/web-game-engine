@@ -18,8 +18,8 @@ class EntityBuilder extends Module {
         /* const createBody = options?.createBody ?? false; */
 
         const entityOptions: EntityOptions = {};
-        if (options?.id) entityOptions.id = options.id; 
-        
+        if (options?.id) entityOptions.id = options.id;
+
         let primitiveType: Cube;
         switch (type) {
             case PrimitiveType.Cube:
