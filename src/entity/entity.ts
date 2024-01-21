@@ -9,11 +9,10 @@ class Entity {
     #bodies: Body[];
     #isPhysicsEnabled: boolean;
 
-    constructor(object: THREE.Object3D, bodies?: Body[], options?: EntityOptions) {
+    constructor(object: THREE.Object3D, options?: EntityOptions) {
         this.#id = options?.id ?? THREE.MathUtils.generateUUID();
         this.#object = object;
-        this.#bodies = bodies || [];
-        
+        this.#bodies = [];
         this.#isPhysicsEnabled = false;
     }
 
