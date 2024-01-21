@@ -4,6 +4,7 @@ import { type Ammo } from "ammo";
 import { Entity } from "@src/entity";
 import { type World, type Body, type BodyOptions } from "./types";
 import { BodySimulationState } from "./enums";
+import { ObjectUtils } from "@src/entity/utils";
 import { Utils } from "@src/utils";
 
 abstract class Physics {
@@ -43,7 +44,7 @@ abstract class Physics {
     static createBody(object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
-        const size = this.#getBoundingBoxSize(object);
+        const size =  ObjectUtils.getBoundingBoxSize(object);
 
         const mass = options?.mass ?? 1;
         const friction = options?.friction ?? 1;
