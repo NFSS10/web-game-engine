@@ -51,6 +51,9 @@ class Entity {
     }
 
     disablePhysics(): Entity {
+        // if the entity is already in a scene, unregister it from the physics world
+        if (this.sceneRef) this.sceneRef.removeEntityFromWorld(this);
+
         this.#isPhysicsEnabled = false;
         return this;
     }
