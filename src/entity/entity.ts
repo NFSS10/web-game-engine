@@ -41,7 +41,7 @@ class Entity {
     enablePhysics(): Entity {
         // the default behavior is to create a box body around the object
         // if no bodies were yet created for this entity
-        if (this.#bodies.length === 0) this.#generateDefaultBody();
+        if (this.#bodies.length === 0) this.#createDefaultBody();
 
         // if the entity is already in a scene, register it in the physics world
         if (this.sceneRef) this.sceneRef.addEntityToWorld(this);
@@ -76,7 +76,7 @@ class Entity {
         throw new Error("Method not implemented");
     }
 
-    #generateDefaultBody(): void {
+    #createDefaultBody(): void {
         console.info("Generating default body for entity", this.#id)
         const body =  Physics.createBody(this.#object, { mass: 1, friction: 1});
         this.#bodies.push(body);
