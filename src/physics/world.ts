@@ -57,9 +57,11 @@ class World {
             // check if the body is already present in the world
             let isBodyAlreadyAdded = false;
             for (let j = 0; j < this.#bodies.length; j++) {
-                const worldBody = this.#bodies[j] as Body;
-                isBodyAlreadyAdded = worldBody.getUserPointer() === body.getUserPointer();
-                if (isBodyAlreadyAdded) break;
+                const worldBody = this.#bodies[j]!;
+                isBodyAlreadyAdded = worldBody === body;
+                if (isBodyAlreadyAdded) {
+                    break;
+                }
             }
 
             // the body is not present in the world, so we add it
@@ -87,7 +89,7 @@ class World {
         this.#physicsWorld.removeRigidBody(body);
 
         // remove the body from the world's registry
-        const index = this.#bodies.findIndex(b => b.getUserPointer() === body.getUserPointer());
+        const index = this.#bodies.findIndex(b => b === body);
         this.#bodies.splice(index, 1);
     }
 
