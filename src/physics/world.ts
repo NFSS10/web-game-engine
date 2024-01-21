@@ -7,11 +7,13 @@ import { type Body } from "./types";
 class World {
     #gravity: number;
     #entities: Entity[];
+    #bodies: Body[];
     #physicsWorld: Ammo.btDiscreteDynamicsWorld;
  
     constructor(gravity?: number) {
         this.#gravity = gravity ?? -9.82;
         this.#entities = [];
+        this.#bodies = [];
 
         this.#physicsWorld = Physics.generateDynamicWorld(this.#gravity);
     }
@@ -24,6 +26,10 @@ class World {
         return this.#entities;
     }
 
+    get bodies(): Body[] {
+        return this.#bodies;
+    }
+
     tick(dt: number): void {
         this.#physicsWorld.stepSimulation(dt, 10);
 
@@ -34,18 +40,41 @@ class World {
     }
 
     addEntity(entity: Entity): void {
-        // avoid adding the same entity twice
-        if (this.#entities.find(e => e.id === entity.id)) return;
+        const foundEntity = this.#entities.find(e => e.id === entity.id);
+        
+        // if the entity is not yet added to the world, simply add it
+        if (!foundEntity) {
+            this.#entities.push(entity);
+            entity.bodies.forEach(body => this.#physicsWorld.addRigidBody(body));
+            return;
+        }
+        
+        // otherwise we need to check if our entity contains new bodies
+        // that need to be added to the world
+        for (let i = 0; i < entity.bodies.length; i++) {
+            const body = entity.bodies[i] as Body;
+            
+            // check if the body is already present in the world
+            let isBodyAlreadyAdded = false;
+            for (let j = 0; j < this.#bodies.length; j++) {
+                const worldBody = this.#bodies[j] as Body;
+                isBodyAlreadyAdded = worldBody.getUserPointer() === body.getUserPointer();
+                if (isBodyAlreadyAdded) break;
+            }
 
-        this.#entities.push(entity);
-        entity.bodies.forEach(body => this.#physicsWorld.addRigidBody(body));
+            // the body is not present in the world, so we add it
+            if (!isBodyAlreadyAdded) {
+                this.#bodies.push(body);
+                this.#physicsWorld.addRigidBody(body);
+            }
+        }
     }
 
     removeEntity(entity: Entity): void {
-        entity.bodies.forEach(body => this.#removeFromWorld(body));
+        entity.bodies.forEach(body => this.#removeBodyFromWorld(body));
     }
 
-    #removeFromWorld(body: Body): void {
+    #removeBodyFromWorld(body: Body): void {
         const contactBodies: Body[] = [];
 
         // get all bodies that were in contact with the removed body
@@ -68,6 +97,12 @@ class World {
 
         // remove the body from the world
         this.#physicsWorld.removeRigidBody(body);
+        this.#unregisterBody(body);
+    }
+
+    #unregisterBody(body: Body): void {
+        const index = this.#bodies.findIndex(b => b.getUserPointer() === body.getUserPointer());
+        this.#bodies.splice(index, 1);
     }
 }
 
