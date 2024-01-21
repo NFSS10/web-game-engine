@@ -93,20 +93,7 @@ abstract class Physics {
 
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i] as Entity;
-
-            const body = entity.body;
-            if (!body) return;
-
-            const ms = body.getMotionState();
-            if (!ms) return;
-
-            ms.getWorldTransform(this.auxTransform);
-            const position = this.auxTransform.getOrigin();
-            const quaternion = this.auxTransform.getRotation();
-
-            const mesh = entity.object;
-            mesh.position.set(position.x(), position.y(), position.z());
-            mesh.quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
+            entity.tickBodies();
         }
     }
 }
