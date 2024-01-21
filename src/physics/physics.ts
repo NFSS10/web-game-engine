@@ -17,7 +17,7 @@ abstract class Physics {
 
     }
 
-    static createWorld(gravity?: number): World {
+    static generateDynamicWorld(gravity?: number): Ammo.btDiscreteDynamicsWorld {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
         gravity = gravity ?? -9.82;
