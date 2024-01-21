@@ -4,6 +4,7 @@ import { type Ammo } from "ammo";
 import { Entity } from "@src/entity";
 import { type World, type Body, type BodyOptions } from "./types";
 import { BodySimulationState } from "./enums";
+import { Utils } from "@src/utils";
 
 abstract class Physics {
     static #Ammo?: Ammo;
@@ -78,10 +79,10 @@ abstract class Physics {
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
 
         // create a unique ID
-        const randomNumber = Math.floor(Math.random() * 100000000);
-        const idStr = `${Date.now()}${randomNumber}`.slice(4);
-        const id = parseInt(idStr);
-        rigidBody.setUserPointer(id);
+        const uuid = Utils.generateUUIDNumber();
+        rigidBody.setUserPointer(uuid);
+
+        
 
         return rigidBody;
     }
