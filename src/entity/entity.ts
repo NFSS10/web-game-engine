@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
-import { type Body } from "@src/physics";
+import { Physics } from "@src/physics";
+import { type Body } from "@src/physics/types";
+import { Scene } from "@src/scene";
 import {type EntityOptions } from "./types";
 
 class Entity {
@@ -8,6 +10,8 @@ class Entity {
     #object: THREE.Object3D;
     #bodies: Body[];
     #isPhysicsEnabled: boolean;
+
+    sceneRef?: Scene;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         this.#id = options?.id ?? THREE.MathUtils.generateUUID();
@@ -29,10 +33,18 @@ class Entity {
     }
 
     get isPhysicsEnabled(): boolean {
+        // TODO: handle this flag. Entities with disabled physics should not affect the physics world
         return this.#isPhysicsEnabled;
     }
 
     enablePhysics(): Entity {
+        // the default behavior is to create a box body around the object
+        // if no bodies were yet created for this entity
+        if (this.#bodies.length === 0) this.#generateDefaultBody();
+
+        // if the entity is already in a scene, register it in the physics world
+        if (this.sceneRef) this.sceneRef.addEntityToWorld(this);
+
         this.#isPhysicsEnabled = true;
         return this;
     }
@@ -42,12 +54,25 @@ class Entity {
         return this;
     }
 
+    destroy(): void {      
+        if (this.sceneRef) {
+            this.sceneRef.removeEntity(this.#id);
+            this.sceneRef = undefined;
+        }
+        
+        // TODO:
+        // - destroy bodies
+        // - destroy object
+    }
+
     tickBodies(): void {
         throw new Error("Method not implemented");
     }
 
-    destroy(): void {
-        throw new Error("Method not implemented");
+    #generateDefaultBody(): void {
+        console.info("Generating default body for entity", this.#id)
+        const body =  Physics.createBody(this.#object, { mass: 1, friction: 1});
+        this.#bodies.push(body);
     }
 }
 
