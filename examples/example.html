@@ -34,19 +34,23 @@
         const scene = sceneBuilder.createScene();
 
         // creates a cube
-        const entity = entityBuilder.createPrimitive("cube", "my-id");
+        const cube = entityBuilder.createPrimitive("cube");
 
-        // makes the entity a physical object
-        entity.enablePhysics();
+        // creates the physical body for this cube
+        cube.createBody();
 
         // adds the newly created entity to the scene
-        scene.addEntity(entity);
+        scene.addEntity(cube);
 
         // creates a static floor
-        const floor = entityBuilder.createPrimitive("cube", "my-foor-id");
+        const floor = entityBuilder.createPrimitive("cube");
         floor.object.scale.set(50, 0.1, 50); // scales the floor
         floor.object.position.set(0, -3, 0); // positions the floor
-        floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
+        // note that we didn't call createBody() here, this is because calling enablePhysics()
+        // will create a default box body for our entity
+        floor.enablePhysics({
+            mass: 0 // setting the mass to 0 will make the object static
+        });
         scene.addEntity(floor);
 
         // sets the new scene
