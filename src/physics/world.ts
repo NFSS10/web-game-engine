@@ -92,6 +92,12 @@ class World {
     }
 
     #activateSurroundingBodies(body: Body): void {
+        // awake all bodies so they can react to the removed body
+        // TODO: find a way to only awake the bodies that were in contact with the removed body
+        for (let i = 0; i < this.#bodies.length; i++) this.#bodies[i]!.activate(true);
+
+        /*
+        // TODO: find an alternative to this
         const contactBodies: Body[] = [];
 
         // get all bodies that were in contact with the removed body
@@ -111,6 +117,7 @@ class World {
             const contactBody = contactBodies[i] as Body;
             contactBody.activate(true);
         }
+        */
     }
 }
 
