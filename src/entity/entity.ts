@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { Physics } from "@src/physics";
 import { type Body } from "@src/physics/types";
 import { Scene } from "@src/scene";
+import { Utils } from "@src/utils";
 import {type EntityOptions } from "./types";
 
 class Entity {
@@ -14,7 +15,7 @@ class Entity {
     sceneRef?: Scene;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
-        this.#id = options?.id ?? THREE.MathUtils.generateUUID();
+        this.#id = options?.id ?? Utils.generateUUID();
         this.#object = object;
         this.#bodies = [];
         this.#isPhysicsEnabled = false;
