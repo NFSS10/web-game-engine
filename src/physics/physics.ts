@@ -79,13 +79,7 @@ abstract class Physics {
         rigidBody.setFriction(friction);
 
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
-
-        // create a unique ID
-        const uuid = Utils.generateUUIDNumber();
-        rigidBody.setUserPointer(uuid);
-
-        
-
+       
         return rigidBody;
     }
 }
