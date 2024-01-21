@@ -126,10 +126,81 @@ declare module "ammo" {
             getMargin(): number;
         }
 
+        export class btConvexShape extends btCollisionShape {}
+
+        export class btStridingMeshInterface {
+            setScaling(scaling: btVector3): void;
+        }
+
+        export class btConvexTriangleMeshShape extends btConvexShape {
+            constructor(meshInterface: btStridingMeshInterface, calcAabb?: boolean);
+        }
+
         export class btBoxShape extends btCollisionShape {
+            constructor(boxHalfExtents: btVector3);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btCapsuleShape extends btCollisionShape {
+            constructor(radius: number, height: number);
+            setMargin(margin: number): void;
+            getMargin(): number;
+            getUpAxis(): number;
+            getRadius(): number;
+            getHalfHeight(): number;
+        }
+
+        export class btCapsuleShapeX extends btCapsuleShape {
+            constructor(radius: number, height: number);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btCapsuleShapeZ extends btCapsuleShape {
+            constructor(radius: number, height: number);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btCylinderShape extends btCollisionShape {
             constructor(halfExtents: btVector3);
             setMargin(margin: number): void;
             getMargin(): number;
+        }
+
+        export class btCylinderShapeX extends btCylinderShape {
+            constructor(halfExtents: btVector3);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btCylinderShapeZ extends btCylinderShape {
+            constructor(halfExtents: btVector3);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btSphereShape extends btCollisionShape {
+            constructor(radius: number);
+            setMargin(margin: number): void;
+            getMargin(): number;
+        }
+
+        export class btMultiSphereShape extends btCollisionShape {
+            constructor(positions: btVector3, radii: ReadonlyArray<number>, numPoints: number);
+        }
+
+        export class btConeShape extends btCollisionShape {
+            constructor(radius: number, height: number);
+        }
+
+        export class btConeShapeX extends btConeShape {
+            constructor(radius: number, height: number);
+        }
+
+        export class btConeShapeZ extends btConeShape {
+            constructor(radius: number, height: number);
         }
 
         export class btTransform {
