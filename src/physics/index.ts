@@ -1,4 +1,4 @@
 import { Physics } from "./physics";
-import { type World, type Body, type BodyOptions } from "./types";
+import { World } from "./world";
 
-export { Physics, type World, type Body, type BodyOptions };
+export { Physics, World };
