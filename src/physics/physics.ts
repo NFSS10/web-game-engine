@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { type Ammo } from "ammo";
 
-import { Entity } from "@src/entity";
-import { type World, type Body, type BodyOptions } from "./types";
-import { BodySimulationState } from "./enums";
 import { ObjectUtils } from "@src/entity/utils";
 import { Utils } from "@src/utils";
+import { type Body, type BodyOptions } from "./types";
+import { BodySimulationState } from "./enums";
 
 abstract class Physics {
     static #Ammo?: Ammo;
@@ -14,7 +13,11 @@ abstract class Physics {
         const module = await import("https://cdn-static-nfss10.netlify.app/libs/ammo.js/ammo.js");
         const lib = module.default;
         this.#Ammo = (await lib()) as Ammo;
+    }
 
+    static get Ammo(): Ammo {
+        if (!Physics.#Ammo) throw new Error("Physics engine not loaded");
+        return Physics.#Ammo;
     }
 
     static generateDynamicWorld(gravity?: number): Ammo.btDiscreteDynamicsWorld {
@@ -35,9 +38,10 @@ abstract class Physics {
         );
         physicsWorld.setGravity(new this.#Ammo.btVector3(0, gravity, 0));
 
-        return physicsWorld;
+        return physicsWorld
     }
 
+    // TODO accept shape instead of calculating from the object
     static createBody(object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
