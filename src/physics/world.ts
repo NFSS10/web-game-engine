@@ -45,7 +45,10 @@ class World {
         // if the entity is not yet added to the world, simply add it
         if (!foundEntity) {
             this.#entities.push(entity);
-            entity.bodies.forEach(body => this.#physicsWorld.addRigidBody(body));
+            entity.bodies.forEach(body => {
+                this.#bodies.push(body);
+                this.#physicsWorld.addRigidBody(body)
+            });
             return;
         }
         
