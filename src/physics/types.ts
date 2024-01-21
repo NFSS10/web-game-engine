@@ -1,7 +1,5 @@
 import { type Ammo } from "ammo";
 
-type World = Ammo.btDiscreteDynamicsWorld;
-
 type Body = Ammo.btRigidBody;
 
 type BodyOptions = {
@@ -9,4 +7,4 @@ type BodyOptions = {
     friction: number;
 };
 
-export { type World, type Body, type BodyOptions };
+export { type Body, type BodyOptions };

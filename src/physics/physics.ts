@@ -87,17 +87,6 @@ abstract class Physics {
 
         return rigidBody;
     }
-
-    static tickWorld(world: World, entities: Entity[], dt: number): void {
-        if (!this.#Ammo) throw new Error("Physics engine not loaded");
-
-        world.stepSimulation(dt, 10);
-
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i] as Entity;
-            entity.tickBodies();
-        }
-    }
 }
 
 export { Physics };
