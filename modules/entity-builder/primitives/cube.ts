@@ -13,7 +13,7 @@ class Cube extends PrimitiveEntity {
 
     _createBody(options?: BodyOptions): void {
         if (this.bodies.length > 0) return;
-        const body = Physics.createBody(this.object, options);
+        const body = Physics.createBoxBody(this.object, options);
         this.bodies.push(body);
     }
 }

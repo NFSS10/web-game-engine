@@ -82,7 +82,7 @@ class Entity {
         if (this.bodies.length > 0) return;
 
         console.info(`Generating default body for entity: "${this.#id}"`);
-        const body = Physics.createBody(this.#object, options);
+        const body = Physics.createBoxBody(this.#object, options);
         this.#bodies.push(body);
     }
 }

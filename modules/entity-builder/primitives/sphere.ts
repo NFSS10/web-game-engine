@@ -14,7 +14,7 @@ class Sphere extends PrimitiveEntity {
     _createBody(options?: BodyOptions): void {
         // TODO: implement this
         if (this.bodies.length > 0) return;
-        const body = Physics.createBody(this.object, options);
+        const body = Physics.createSphereBody(0.5, this.object, options);
         this.bodies.push(body);
     }
 }
