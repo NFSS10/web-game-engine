@@ -1,5 +1,8 @@
 declare module "ammo" {
     export namespace Ammo {
+
+        export function destroy(obj: any): void;
+
         export class btDefaultCollisionConfiguration {}
 
         export class btPersistentManifold {
