@@ -71,7 +71,12 @@ class World {
     }
 
     removeEntity(entity: Entity): void {
+        // remove the entity's bodies from the world
         entity.bodies.forEach(body => this.#removeBodyFromWorld(body));
+        
+        // remove the entity from the world
+        const index = this.#entities.findIndex(e => e.id === entity.id);
+        this.#entities.splice(index, 1);
     }
 
     #removeBodyFromWorld(body: Body): void {
@@ -97,10 +102,8 @@ class World {
 
         // remove the body from the world
         this.#physicsWorld.removeRigidBody(body);
-        this.#unregisterBody(body);
-    }
 
-    #unregisterBody(body: Body): void {
+        // remove the body from the world's registry
         const index = this.#bodies.findIndex(b => b.getUserPointer() === body.getUserPointer());
         this.#bodies.splice(index, 1);
     }
