@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import { type Body } from "@src/physics";
+import {type EntityOptions } from "./types";
 
 class Entity {
     #id: string;
@@ -8,8 +9,8 @@ class Entity {
     #bodies: Body[];
     #isPhysicsEnabled: boolean;
 
-    constructor(id: string, object: THREE.Object3D, bodies?: Body[]) {
-        this.#id = id;
+    constructor(object: THREE.Object3D, bodies?: Body[], options?: EntityOptions) {
+        this.#id = options?.id ?? THREE.MathUtils.generateUUID();
         this.#object = object;
         this.#bodies = bodies || [];
         
