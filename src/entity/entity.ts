@@ -77,7 +77,7 @@ class Entity {
     }
 
     #createDefaultBody(bodyOptions?: BodyOptions): void {
-        console.info("Generating default body for entity", this.#id)
+        console.info(`Generating default body for entity: "${this.#id}"`);
         const body =  Physics.createBody(this.#object, bodyOptions);
         this.#bodies.push(body);
     }
