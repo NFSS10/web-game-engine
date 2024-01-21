@@ -11,7 +11,7 @@ class Scene {
     #timeScale = 1;
 
     constructor(id: string) {
-        this.#id = id;
+        this.#id = id ?? "default";
         this.#scene = new THREE.Scene();
         this.#world = new World();
     }
