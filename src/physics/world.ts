@@ -92,32 +92,21 @@ class World {
     }
 
     #activateSurroundingBodies(body: Body): void {
-        // awake all bodies so they can react to the removed body
-        // TODO: find a way to only awake the bodies that were in contact with the removed body
-        for (let i = 0; i < this.#bodies.length; i++) this.#bodies[i]!.activate(true);
-
-        /*
-        // TODO: find an alternative to this
-        const contactBodies: Body[] = [];
-
-        // get all bodies that were in contact with the removed body
+        // iterate over all contact manifolds to find the bodies that were in contact with the removed body
         const numManifolds = this.#physicsWorld.getDispatcher().getNumManifolds();
         for (let i = 0; i < numManifolds; i++) {
             const contactManifold = this.#physicsWorld.getDispatcher().getManifoldByIndexInternal(i);
-            const body0 = contactManifold.getBody0() as Body;
-            const body1 = contactManifold.getBody1() as Body;
 
-            // register bodies that were in contact with the removed body
-            if (body0.getUserPointer() !== body.getUserPointer()) contactBodies.push(body0);
-            if (body1.getUserPointer() !== body.getUserPointer()) contactBodies.push(body1);
-        }
+            // get the bodies involved in the contact
+            const body0 = Physics.Ammo.btRigidBody.prototype.upcast(contactManifold.getBody0());
+            const body1 = Physics.Ammo.btRigidBody.prototype.upcast(contactManifold.getBody1());
 
-        // awake all contact bodies so they can react to the removed body
-        for (let i = 0; i < contactBodies.length; i++) {
-            const contactBody = contactBodies[i] as Body;
-            contactBody.activate(true);
+            // check if the body is involved in the contact, if yes then wake them up so they can react to the removed body
+            if (body0 === body || body1 === body) {
+                body0.activate(true);
+                body1.activate(true);
+            }
         }
-        */
     }
 }
 
