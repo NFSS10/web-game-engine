@@ -1,8 +1,9 @@
-import * as THREE from "three";
-
 import { Module } from "@modules";
 import { Entity } from "@src/entity";
-import { PrimitiveType } from "./types";
+import { type EntityOptions } from "@src/entity/types";
+import { Cube } from "./primitives";
+import { PrimitiveType } from "./primitives/enums";
+import { type EntityBuilderOptions } from "./types";
 
 class EntityBuilder extends Module {
     constructor() {
@@ -13,27 +14,24 @@ class EntityBuilder extends Module {
         return Object.values(PrimitiveType);
     }
 
-    createPrimitive(type: PrimitiveType, id: string): Entity {
+    createPrimitive(type: PrimitiveType, options?: EntityBuilderOptions): Entity {
+        /* const createBody = options?.createBody ?? false; */
+
+        const entityOptions: EntityOptions = {};
+        if (options?.id) entityOptions.id = options.id; 
+        
+        let primitiveType: Cube;
         switch (type) {
             case PrimitiveType.Cube:
-                return this.#createCube(id);
+                primitiveType = new Cube(entityOptions);
+                break;
             default:
                 throw new Error(`Unsupported primitive type: ${type}`);
         }
-    }
 
-    #createCube(id: string): Entity {
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshNormalMaterial();
-        const mesh = new THREE.Mesh(geometry, material);
+        /* if (createBody) primitiveType.generateBody(options?.bodyOptions); */
 
-        // TODO: remove this test code
-        mesh.position.z = -5;
-        mesh.rotateX(0.35);
-        mesh.rotateY(0.35);
-
-        const entity = new Entity(id, mesh);
-        return entity;
+        return primitiveType;
     }
 }
 

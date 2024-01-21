@@ -1,5 +1,5 @@
-enum PrimitiveType {
-    Cube = "cube"
+type EntityBuilderOptions = {
+    id?: string;
 }
 
-export { PrimitiveType };
+export { type EntityBuilderOptions };
