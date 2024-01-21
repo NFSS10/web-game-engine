@@ -41,7 +41,7 @@ class Entity {
     enablePhysics(bodyOptions?: BodyOptions): Entity {
         // the default behavior is to create a box body around the object
         // if no bodies were yet created for this entity
-        if (this.#bodies.length === 0) this.#createDefaultBody(bodyOptions);
+        if (this.#bodies.length === 0) this._createBody(bodyOptions);
 
         // if the entity is already in a scene, register it in the physics world
         if (this.sceneRef) this.sceneRef.addEntityToWorld(this);
@@ -79,9 +79,11 @@ class Entity {
         throw new Error("Method not implemented");
     }
 
-    #createDefaultBody(bodyOptions?: BodyOptions): void {
+    _createBody(options?: BodyOptions): void {
+        if (this.bodies.length > 0) return;
+
         console.info(`Generating default body for entity: "${this.#id}"`);
-        const body =  Physics.createBody(this.#object, bodyOptions);
+        const body =  Physics.createBody(this.#object, options);
         this.#bodies.push(body);
     }
 }

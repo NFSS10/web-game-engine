@@ -4,7 +4,7 @@ import { type Ammo } from "ammo";
 import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Physics } from "@src/physics";
-import { type Body, type BodyOptions } from "@src/physics/types";
+import { type Body } from "@src/physics/types";
 
 class PrimitiveEntity extends Entity {
     #auxTransform: Ammo.btTransform;
@@ -13,10 +13,6 @@ class PrimitiveEntity extends Entity {
         super(object, options);
 
         this.#auxTransform = new Physics.Ammo.btTransform();   
-    }
-
-    createBody(options?: BodyOptions): PrimitiveEntity {
-        throw new Error("Method not implemented");
     }
 
     tickBodies(): void {
