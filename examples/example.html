@@ -51,6 +51,11 @@
         floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
         scene.addEntity(floor);
 
+        const sphere = entityBuilder.createPrimitive("sphere", { id: "sphere" });
+        sphere.object.position.set(0, 3, -5);
+        sphere.enablePhysics();
+        scene.addEntity(sphere);
+
         // sets the new scene
         gameEngine.setScene(scene);
 
