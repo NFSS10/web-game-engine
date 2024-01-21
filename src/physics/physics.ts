@@ -10,14 +10,11 @@ import { Utils } from "@src/utils";
 abstract class Physics {
     static #Ammo?: Ammo;
 
-    static auxTransform: Ammo.btTransform;
-
     static async init(): Promise<void> {
         const module = await import("https://cdn-static-nfss10.netlify.app/libs/ammo.js/ammo.js");
         const lib = module.default;
         this.#Ammo = (await lib()) as Ammo;
 
-        this.auxTransform = new this.#Ammo.btTransform();
     }
 
     static createWorld(gravity?: number): World {
