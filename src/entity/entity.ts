@@ -54,15 +54,21 @@ class Entity {
         return this;
     }
 
-    destroy(): void {      
+    destroy(): void {    
+        // remove references before destroying
         if (this.sceneRef) {
             this.sceneRef.removeEntity(this.#id);
             this.sceneRef = undefined;
         }
+
+        this.#bodies.forEach(body => Physics.Ammo.destroy(body));
+        this.#bodies.length = 0;
+
+        // @ts-expect-error
+        this.#object = null; // TODO: fully dispose the object
         
-        // TODO:
-        // - destroy bodies
-        // - destroy object
+        // @ts-expect-error
+        this.#id = null;
     }
 
     tickBodies(): void {
