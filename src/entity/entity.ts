@@ -34,7 +34,6 @@ class Entity {
     }
 
     get isPhysicsEnabled(): boolean {
-        // TODO: handle this flag. Entities with disabled physics should not affect the physics world
         return this.#isPhysicsEnabled;
     }
 
