@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { type Ammo } from "ammo";
 
 import { ObjectUtils } from "@src/entity/utils";
-import { Utils } from "@src/utils";
 import { type Body, type BodyOptions } from "./types";
 import { BodySimulationState } from "./enums";
 
