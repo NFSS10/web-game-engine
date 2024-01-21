@@ -1,13 +1,19 @@
-import { Physics, type Body, type BodyOptions } from "@src/physics";
+import * as THREE from "three";
+
+import { type Body } from "@src/physics";
 
 class Entity {
     #id: string;
     #object: THREE.Object3D;
-    #body?: Body;
+    #bodies: Body[];
+    #isPhysicsEnabled: boolean;
 
-    constructor(id: string, object: THREE.Object3D) {
+    constructor(id: string, object: THREE.Object3D, bodies?: Body[]) {
         this.#id = id;
         this.#object = object;
+        this.#bodies = bodies || [];
+        
+        this.#isPhysicsEnabled = false;
     }
 
     get id(): string {
@@ -18,17 +24,30 @@ class Entity {
         return this.#object;
     }
 
-    get body(): Body | undefined {
-        return this.#body;
+    get bodies(): Body[] {
+        return this.#bodies;
     }
 
-    enablePhysics(options?: BodyOptions): Entity {
-        this.#body = Physics.createBody(this.#object, options);
+    get isPhysicsEnabled(): boolean {
+        return this.#isPhysicsEnabled;
+    }
+
+    enablePhysics(): Entity {
+        this.#isPhysicsEnabled = true;
         return this;
     }
 
+    disablePhysics(): Entity {
+        this.#isPhysicsEnabled = false;
+        return this;
+    }
+
+    tickBodies(): void {
+        throw new Error("Method not implemented");
+    }
+
     destroy(): void {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented");
     }
 }
 
