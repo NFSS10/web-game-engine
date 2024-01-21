@@ -80,6 +80,18 @@ class World {
     }
 
     #removeBodyFromWorld(body: Body): void {
+        // awake surrounding bodies so they can react to the removed body
+        this.#activateSurroundingBodies(body);
+
+        // remove the body from the world
+        this.#physicsWorld.removeRigidBody(body);
+
+        // remove the body from the world's registry
+        const index = this.#bodies.findIndex(b => b.getUserPointer() === body.getUserPointer());
+        this.#bodies.splice(index, 1);
+    }
+
+    #activateSurroundingBodies(body: Body): void {
         const contactBodies: Body[] = [];
 
         // get all bodies that were in contact with the removed body
@@ -99,13 +111,6 @@ class World {
             const contactBody = contactBodies[i] as Body;
             contactBody.activate(true);
         }
-
-        // remove the body from the world
-        this.#physicsWorld.removeRigidBody(body);
-
-        // remove the body from the world's registry
-        const index = this.#bodies.findIndex(b => b.getUserPointer() === body.getUserPointer());
-        this.#bodies.splice(index, 1);
     }
 }
 
