@@ -1,7 +1,7 @@
 import { Module } from "@modules";
 import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
-import { Cube, Sphere } from "./primitives";
+import { Cube, Cylinder, Sphere } from "./primitives";
 import { PrimitiveType } from "./primitives/enums";
 import { type EntityBuilderOptions } from "./types";
 
@@ -21,6 +21,8 @@ class EntityBuilder extends Module {
         switch (type) {
             case PrimitiveType.Cube:
                 return new Cube(entityOptions);
+            case PrimitiveType.Cylinder:
+                return new Cylinder(entityOptions);
             case PrimitiveType.Sphere:
                 return new Sphere(entityOptions);
             default:

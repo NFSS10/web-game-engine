@@ -57,6 +57,14 @@ abstract class Physics {
         return this.#createBody(shape, object, options);
     }
 
+    static createCylinderBody(radius: number, height: number, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
+        const halfExtents = new this.#Ammo.btVector3(radius, height * 0.5, radius);
+        const shape = new this.#Ammo.btCylinderShape(halfExtents);
+        return this.#createBody(shape, object, options);    
+    }
+
     static #createBody(shape: Ammo.btCollisionShape, object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 

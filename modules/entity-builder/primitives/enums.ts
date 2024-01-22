@@ -1,6 +1,7 @@
 enum PrimitiveType {
     Cube = "cube",
-    Sphere = "sphere"
+    Cylinder = "cylinder",
+    Sphere = "sphere",
 }
 
 export { PrimitiveType };
