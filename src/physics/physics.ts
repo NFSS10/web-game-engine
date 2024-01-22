@@ -62,12 +62,12 @@ abstract class Physics {
 
         const halfExtents = new this.#Ammo.btVector3(radius, height * 0.5, radius);
         const shape = new this.#Ammo.btCylinderShape(halfExtents);
-        return this.#createBody(shape, object, options);    
+        return this.#createBody(shape, object, options);
     }
 
     static createConeBody(radius: number, height: number, object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
-    
+
         const shape = new this.#Ammo.btConeShape(radius, height);
         return this.#createBody(shape, object, options);
     }
