@@ -1,5 +1,5 @@
 import { Module, EntityBuilder, SceneBuilder } from "@modules";
-import { ModuleType } from "./types";
+import { ModuleType } from "./enums";
 
 abstract class ModuleLoader {
     static SUPPORTED_MODULES = Object.values(ModuleType);

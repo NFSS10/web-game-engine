@@ -1,13 +1,24 @@
-import { Physics, type Body, type BodyOptions } from "@src/physics";
+import * as THREE from "three";
+
+import { Physics } from "@src/physics";
+import { type Body, type BodyOptions } from "@src/physics/types";
+import { Scene } from "@src/scene";
+import { Utils } from "@src/utils";
+import { type EntityOptions } from "./types";
 
 class Entity {
     #id: string;
     #object: THREE.Object3D;
-    #body?: Body;
+    #bodies: Body[];
+    #isPhysicsEnabled: boolean;
 
-    constructor(id: string, object: THREE.Object3D) {
-        this.#id = id;
+    sceneRef?: Scene;
+
+    constructor(object: THREE.Object3D, options?: EntityOptions) {
+        this.#id = options?.id ?? Utils.generateUUID();
         this.#object = object;
+        this.#bodies = [];
+        this.#isPhysicsEnabled = false;
     }
 
     get id(): string {
@@ -18,17 +29,61 @@ class Entity {
         return this.#object;
     }
 
-    get body(): Body | undefined {
-        return this.#body;
+    get bodies(): Body[] {
+        return this.#bodies;
     }
 
-    enablePhysics(options?: BodyOptions): Entity {
-        this.#body = Physics.createBody(this.#object, options);
+    get isPhysicsEnabled(): boolean {
+        return this.#isPhysicsEnabled;
+    }
+
+    enablePhysics(bodyOptions?: BodyOptions): Entity {
+        // the default behavior is to create a box body around the object
+        // if no bodies were yet created for this entity
+        if (this.#bodies.length === 0) this._createBody(bodyOptions);
+
+        // if the entity is already in a scene, register it in the physics world
+        if (this.sceneRef) this.sceneRef.addEntityToWorld(this);
+
+        this.#isPhysicsEnabled = true;
+        return this;
+    }
+
+    disablePhysics(): Entity {
+        // if the entity is already in a scene, unregister it from the physics world
+        if (this.sceneRef) this.sceneRef.removeEntityFromWorld(this);
+
+        this.#isPhysicsEnabled = false;
         return this;
     }
 
     destroy(): void {
-        throw new Error("Method not implemented.");
+        // remove references before destroying
+        if (this.sceneRef) {
+            this.sceneRef.removeEntity(this.#id);
+            this.sceneRef = undefined;
+        }
+
+        this.#bodies.forEach(body => Physics.Ammo.destroy(body));
+        this.#bodies.length = 0;
+
+        // @ts-expect-error Ensure this is destroyed
+        this.#object = null; // TODO: fully dispose the object
+
+        // @ts-expect-error Ensure this is destroyed
+        this.#id = null;
+    }
+
+    tickBodies(): void {
+        throw new Error("Method not implemented");
+    }
+
+    _createBody(options?: BodyOptions): void {
+        if (this.bodies.length > 0) return;
+
+        console.info(`Generating default body for entity: "${this.#id}"`);
+        const body = Physics.createBoxBody(this.#object, options);
+        this.#bodies.push(body);
     }
 }
 

@@ -1,24 +1,25 @@
 import * as THREE from "three";
 import { type Ammo } from "ammo";
 
-import { Entity } from "@src/entity";
-import { type World, type Body, type BodyOptions } from "./types";
+import { ObjectUtils } from "@src/entity/utils";
+import { type Body, type BodyOptions } from "./types";
 import { BodySimulationState } from "./enums";
 
 abstract class Physics {
     static #Ammo?: Ammo;
 
-    static auxTransform: Ammo.btTransform;
-
     static async init(): Promise<void> {
         const module = await import("https://cdn-static-nfss10.netlify.app/libs/ammo.js/ammo.js");
         const lib = module.default;
         this.#Ammo = (await lib()) as Ammo;
-
-        this.auxTransform = new this.#Ammo.btTransform();
     }
 
-    static createWorld(gravity?: number): World {
+    static get Ammo(): Ammo {
+        if (!Physics.#Ammo) throw new Error("Physics engine not loaded");
+        return Physics.#Ammo;
+    }
+
+    static generateDynamicWorld(gravity?: number): Ammo.btDiscreteDynamicsWorld {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
         gravity = gravity ?? -9.82;
@@ -39,17 +40,50 @@ abstract class Physics {
         return physicsWorld;
     }
 
-    static createBody(object: THREE.Object3D, options?: BodyOptions): Body {
+    static createBoxBody(object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
-        const size = this.#getBoundingBoxSize(object);
+        const size = ObjectUtils.getBoundingBoxSize(object);
+
+        const halfExtents = new this.#Ammo.btVector3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
+        const shape = new this.#Ammo.btBoxShape(halfExtents);
+        return this.#createBody(shape, object, options);
+    }
+
+    static createSphereBody(radius: number, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
+        const shape = new this.#Ammo.btSphereShape(radius);
+        return this.#createBody(shape, object, options);
+    }
+
+    static createCylinderBody(radius: number, height: number, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
+        const halfExtents = new this.#Ammo.btVector3(radius, height * 0.5, radius);
+        const shape = new this.#Ammo.btCylinderShape(halfExtents);
+        return this.#createBody(shape, object, options);
+    }
+
+    static createConeBody(radius: number, height: number, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
+        const shape = new this.#Ammo.btConeShape(radius, height);
+        return this.#createBody(shape, object, options);
+    }
+
+    static createCapsuleBody(radius: number, height: number, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
+
+        const shape = new this.#Ammo.btCapsuleShape(radius, height);
+        return this.#createBody(shape, object, options);
+    }
+
+    static #createBody(shape: Ammo.btCollisionShape, object: THREE.Object3D, options?: BodyOptions): Body {
+        if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
         const mass = options?.mass ?? 1;
         const friction = options?.friction ?? 1;
-
-        // creates the physical body shape
-        const halfExtents = new this.#Ammo.btVector3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
-        const shape = new this.#Ammo.btBoxShape(halfExtents);
 
         // calculates inertia
         const localInertia = new this.#Ammo.btVector3(0, 0, 0);
@@ -77,55 +111,7 @@ abstract class Physics {
 
         rigidBody.setActivationState(BodySimulationState.ACTIVE);
 
-        // create a unique ID
-        const randomNumber = Math.floor(Math.random() * 100000000);
-        const idStr = `${Date.now()}${randomNumber}`.slice(4);
-        const id = parseInt(idStr);
-        rigidBody.setUserPointer(id);
-
         return rigidBody;
-    }
-
-    static tickWorld(world: World, entities: Entity[], dt: number): void {
-        if (!this.#Ammo) throw new Error("Physics engine not loaded");
-
-        world.stepSimulation(dt, 10);
-
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i] as Entity;
-
-            const body = entity.body;
-            if (!body) return;
-
-            const ms = body.getMotionState();
-            if (!ms) return;
-
-            ms.getWorldTransform(this.auxTransform);
-            const position = this.auxTransform.getOrigin();
-            const quaternion = this.auxTransform.getRotation();
-
-            const mesh = entity.object;
-            mesh.position.set(position.x(), position.y(), position.z());
-            mesh.quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
-        }
-    }
-
-    static #getBoundingBoxSize(object: THREE.Object3D): THREE.Vector3 {
-        // backup original rotation because the Box3 we want OBB instead of AABB
-        const originalRotation = object.rotation.clone();
-
-        // remove rotation from the mesh so that the bounding box is always aligned with the mesh
-        object.rotation.set(0, 0, 0);
-
-        // creates bounding box
-        const box = new THREE.Box3().setFromObject(object);
-        const size = new THREE.Vector3();
-        box.getSize(size);
-
-        // restore rotation
-        object.rotation.copy(originalRotation);
-
-        return size;
     }
 }
 

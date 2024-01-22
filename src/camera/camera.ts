@@ -13,6 +13,10 @@ class Camera {
         const far = options?.far ?? 1000;
 
         this.#camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+        // TODO: Remove this test code
+        this.#camera.position.set(-4, 2.5, 13);
+        this.#camera.lookAt(0, -2, 0);
     }
 
     get camera(): THREE.PerspectiveCamera {
