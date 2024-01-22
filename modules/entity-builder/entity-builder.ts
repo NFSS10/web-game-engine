@@ -1,7 +1,7 @@
 import { Module } from "@modules";
 import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
-import { Cone, Cube, Cylinder, Sphere } from "./primitives";
+import { Capsule, Cone, Cube, Cylinder, Sphere } from "./primitives";
 import { PrimitiveType } from "./primitives/enums";
 import { type EntityBuilderOptions } from "./types";
 
@@ -19,6 +19,8 @@ class EntityBuilder extends Module {
         if (options?.id) entityOptions.id = options.id;
 
         switch (type) {
+            case PrimitiveType.Capsule:
+                return new Capsule(entityOptions);
             case PrimitiveType.Cone:
                 return new Cone(entityOptions);
             case PrimitiveType.Cube:
