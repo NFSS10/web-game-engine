@@ -3,6 +3,7 @@ import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Capsule, Cone, Cube, Cylinder, Sphere } from "./primitives";
 import { PrimitiveType } from "./primitives/enums";
+import { RaycastVehicleEntity } from "./raycast-vehicle";
 import { type EntityBuilderOptions } from "./types";
 
 class EntityBuilder extends Module {
@@ -32,6 +33,10 @@ class EntityBuilder extends Module {
             default:
                 throw new Error(`Unsupported primitive type: ${type}`);
         }
+    }
+
+    createRaycastVehicle(): Entity {
+        return new RaycastVehicleEntity();
     }
 }
 
