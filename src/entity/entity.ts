@@ -86,7 +86,9 @@ class Entity {
         this.#bodies.push(body);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _onAddToWorld(world: World): void {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _onRemoveFromWorld(world: World): void {}
 }
 
