@@ -126,6 +126,10 @@ declare module "ammo" {
             castRay(from: btVector3, to: btVector3, result: btVehicleRaycasterResult): void;
         }
 
+        export class btDefaultVehicleRaycaster extends btVehicleRaycaster {
+            constructor(world: btDynamicsWorld);
+        }
+
         export class btVehicleRaycasterResult {
             get_m_hitPointInWorld(): btVector3;
             set_m_hitPointInWorld(m_hitPointInWorld: btVector3): void;
