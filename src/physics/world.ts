@@ -30,6 +30,10 @@ class World {
         return this.#bodies;
     }
 
+    get physicsWorld(): Ammo.btDiscreteDynamicsWorld {
+        return this.#physicsWorld;
+    }
+
     tick(dt: number): void {
         this.#physicsWorld.stepSimulation(dt, 10);
 
