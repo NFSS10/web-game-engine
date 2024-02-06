@@ -54,6 +54,16 @@ class RaycastVehicleEntity extends Entity {
         return this.#currentSpeed;
     }
 
+    setWheelProperties(wheel: WheelIndex, options: WheelOptions): RaycastVehicleEntity {
+        // TODO
+
+        return this;
+    }
+
+    setWheelState(wheel: WheelIndex, state: WheelState): void {
+        this.#wheelStates[wheel] = state;
+    }
+
     _createBody(): void {
         if (this.bodies.length > 0) return;
         this.#chassisBody = Physics.createBoxBody(this.#chassisMesh);
