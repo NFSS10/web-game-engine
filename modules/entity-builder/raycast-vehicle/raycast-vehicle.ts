@@ -18,6 +18,7 @@ class RaycastVehicleEntity extends Entity {
     #wheelsMeshes: THREE.Object3D[] = [];
     #chassisBody: Ammo.btRigidBody;
     #vehicle: Ammo.btRaycastVehicle;
+    #currentSpeed: number = 0;
 
     constructor(
         chassis: THREE.Object3D,
@@ -46,6 +47,10 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelsMeshes.push(rightBackWheel);
     }
 
+    get speed(): number {
+        return this.#currentSpeed;
+    }
+
     _createBody(): void {
         if (this.bodies.length > 0) return;
         this.#chassisBody = Physics.createBoxBody(this.#chassisMesh);
@@ -67,8 +72,7 @@ class RaycastVehicleEntity extends Entity {
     }
 
     tickBodies(): void {
-        const speed = this.#vehicle.getCurrentSpeedKmHour();
-        console.log("speed", speed); // TODO: expose this
+        this.#currentSpeed = this.#vehicle.getCurrentSpeedKmHour();
 
         const engineForce = 0.5; // TODO: support customizing engine force
         this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_LEFT);
