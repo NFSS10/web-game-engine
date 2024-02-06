@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { Physics } from "@src/physics";
+import { Physics, World } from "@src/physics";
 import { type Body, type BodyOptions } from "@src/physics/types";
 import { Scene } from "@src/scene";
 import { Utils } from "@src/utils";
@@ -85,6 +85,9 @@ class Entity {
         const body = Physics.createBoxBody(this.#object, options);
         this.#bodies.push(body);
     }
+
+    _onAddToWorld(world: World): void {}
+    _onRemoveFromWorld(world: World): void {}
 }
 
 export { Entity };
