@@ -35,12 +35,11 @@ const createChassis = (): THREE.Object3D => {
     return chassis;
 };
 
-
 const createWheel = (): THREE.Object3D => {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshNormalMaterial();
     const mesh = new THREE.Mesh(geometry, material);
     return mesh;
-}
+};
 
 export { CarEntity };
