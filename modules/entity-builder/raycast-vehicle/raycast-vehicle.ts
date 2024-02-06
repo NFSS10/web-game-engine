@@ -92,6 +92,12 @@ class RaycastVehicleEntity extends Entity {
         this.#chassisMesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
     }
 
+    destroy(): void {
+        super.destroy();
+
+        // TODO
+    }
+
     #createWheels(vehicle: Ammo.btRaycastVehicle, tuning: Ammo.btVehicleTuning): void {
         // TODO: support custom wheel options
         const friction = 1000;
