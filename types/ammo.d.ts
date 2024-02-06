@@ -44,7 +44,14 @@ declare module "ammo" {
             getDistance(): number;
         }
 
-        export class btDynamicsWorld extends btCollisionWorld {}
+        export class btActionInterface {
+            updateAction(collisionWorld: btCollisionWorld, deltaTimeStep: number): void;
+        }
+
+        export class btDynamicsWorld extends btCollisionWorld {
+            addAction(action: btActionInterface): void;
+            removeAction(action: btActionInterface): void;
+        }
 
         export class btDiscreteDynamicsWorld extends btDynamicsWorld {
             constructor(
@@ -61,10 +68,6 @@ declare module "ammo" {
             addConstraint(constraint: btTypedConstraint, disableCollisionsBetweenLinkedBodies?: boolean): void;
             removeConstraint(constraint: btTypedConstraint): void;
             stepSimulation(timeStep: number, maxSubSteps?: number, fixedTimeStep?: number): number;
-        }
-
-        export class btActionInterface {
-            updateAction(collisionWorld: btCollisionWorld, deltaTimeStep: number): void;
         }
 
         export class btRaycastVehicle extends btActionInterface {
