@@ -31,7 +31,6 @@ class Scene {
         entity.sceneRef = this;
         this.#entities.push(entity);
         this.#scene.add(entity.object);
-        this.#world.addEntity(entity);
         this.addEntityToWorld(entity);
 
         return this;
