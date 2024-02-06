@@ -12,14 +12,22 @@ class RaycastVehicleEntity extends Entity {
     #chassisBody: Ammo.btRigidBody;
     #vehicle: Ammo.btRaycastVehicle;
 
-    constructor(options?: EntityOptions) {
-        const chassis = createChassis();
+    constructor(
+        chassis: THREE.Object3D,
+        leftFrontWheel: THREE.Object3D,
+        rightFrontWheel: THREE.Object3D,
+        leftBackWheel: THREE.Object3D,
+        rightBackWheel: THREE.Object3D,
+        options?: EntityOptions
+    ) { 
+        const car = new THREE.Object3D();
+        car.add(chassis);
+        car.add(leftFrontWheel);
+        car.add(rightFrontWheel);
+        car.add(leftBackWheel);
+        car.add(rightBackWheel);
 
-        const mesh = new THREE.Object3D();
-        mesh.add(chassis);
-
-        super(mesh);
-
+        super(car);
         this.#chassisMesh = chassis;
     }
 
@@ -205,22 +213,5 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_rollInfluence(rollInfluence);
     }
 }
-
-const createChassis = (): THREE.Object3D => {
-    const chassis = new THREE.Object3D();
-
-    const material = new THREE.MeshNormalMaterial();
-
-    const baseGeo = new THREE.BoxGeometry(2, 1, 5);
-    const baseMesh = new THREE.Mesh(baseGeo, material);
-    chassis.add(baseMesh);
-
-    const topGeo = new THREE.BoxGeometry(2, 0.75, 3);
-    const topMesh = new THREE.Mesh(topGeo, material);
-    topMesh.position.set(0, 0.75, -0.5);
-    chassis.add(topMesh);
-
-    return chassis;
-};
 
 export { RaycastVehicleEntity };
