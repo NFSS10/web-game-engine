@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { type EntityOptions } from "@src/entity/types";
 import { RaycastVehicleEntity } from "./raycast-vehicle";
+import { WheelIndex, WheelState } from "./enums";
 
 class CarEntity extends RaycastVehicleEntity {
     constructor(options?: EntityOptions) {
@@ -14,7 +15,68 @@ class CarEntity extends RaycastVehicleEntity {
         backLeftWheel.position.set(-1, -0.5, -2);
         const backRightWheel = createWheel();
         backRightWheel.position.set(1, -0.5, -2);
+
         super(chassis, frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, options);
+
+        this.setWheelProperties(WheelIndex.FRONT_LEFT, { 
+            // TODO
+            radius?: number;
+            isFrontWheel?: boolean;
+            friction?: number;
+            suspensionStiffness?: number;
+            suspensionDamping?: number;
+            suspensionCompression?: number;
+            suspensionRestLength?: number;
+            rollInfluence?: number;
+            maxEngineForce?: number;
+            maxBrakeForce?: number;
+         });
+    }
+
+    accelerate(): void {
+        this.setWheelState(WheelIndex.FRONT_LEFT, WheelState.ACCELERATING);
+    }
+
+    brake(): void {
+        this.setWheelState(WheelIndex.FRONT_LEFT, WheelState.BRAKING);
+        this.setWheelState(WheelIndex.FRONT_RIGHT, WheelState.BRAKING);
+        this.setWheelState(WheelIndex.BACK_LEFT, WheelState.BRAKING);
+        this.setWheelState(WheelIndex.BACK_RIGHT, WheelState.BRAKING);
+    }
+
+    handbrake(): void {
+        this.setWheelState(WheelIndex.FRONT_LEFT, WheelState.NONE);
+        this.setWheelState(WheelIndex.FRONT_RIGHT, WheelState.NONE);
+        this.setWheelState(WheelIndex.BACK_LEFT, WheelState.BRAKING);
+        this.setWheelState(WheelIndex.BACK_RIGHT, WheelState.BRAKING);
+    }
+
+    reverse(): void {
+        if (this.speed > 0) {
+            this.brake();
+            return;
+        }
+
+        this.setWheelState(WheelIndex.BACK_LEFT, WheelState.REVERSING);
+        this.setWheelState(WheelIndex.BACK_RIGHT, WheelState.REVERSING);
+    }
+
+    steerLeft(): void {
+        this.setWheelState(WheelIndex.FRONT_LEFT, WheelState.STEERING_LEFT);
+        this.setWheelState(WheelIndex.FRONT_RIGHT, WheelState.STEERING_LEFT);
+    }
+
+    steerRight(): void {
+        this.setWheelState(WheelIndex.FRONT_LEFT, WheelState.STEERING_RIGHT);
+        this.setWheelState(WheelIndex.FRONT_RIGHT, WheelState.STEERING_RIGHT);
+    }
+
+    toggleHeadlights(): void {
+        // TODO
+    }
+
+    horn(): void {
+        // TODO
     }
 }
 
