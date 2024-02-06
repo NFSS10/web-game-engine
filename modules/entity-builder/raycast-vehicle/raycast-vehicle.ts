@@ -5,6 +5,7 @@ import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
+import { WheelOptions } from "./types";
 
 enum WheelIndex {
     FRONT_LEFT = 0,
@@ -68,7 +69,11 @@ class RaycastVehicleEntity extends Entity {
 
         world.physicsWorld.addAction(this.#vehicle);
 
-        this.#createWheels(this.#vehicle, tuning);
+        // the order matters here, it follows the order of the WheelIndex enum
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_LEFT]!, { isFrontWheel: true });
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_RIGHT]!, { isFrontWheel: true });
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_LEFT]!, { isFrontWheel: true });
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_RIGHT]!, { isFrontWheel: true });
     }
 
     tickBodies(): void {
@@ -102,88 +107,31 @@ class RaycastVehicleEntity extends Entity {
         // TODO
     }
 
-    #createWheels(vehicle: Ammo.btRaycastVehicle, tuning: Ammo.btVehicleTuning): void {
-        // TODO: support custom wheel options
-        const friction = 1000;
-        const suspensionStiffness = 15.0;
-        const suspensionDamping = 0.5;
-        const suspensionCompression = 5.0;
-        const suspensionRestLength = 0.5;
-        const rollInfluence = 0.5;
-
-        this.#createWheel(
-            vehicle,
-            tuning,
-            this.#wheelsMeshes[0]!,
-            true,
-            friction,
-            suspensionStiffness,
-            suspensionDamping,
-            suspensionCompression,
-            suspensionRestLength,
-            rollInfluence
-        );
-
-        this.#createWheel(
-            vehicle,
-            tuning,
-            this.#wheelsMeshes[1]!,
-            true,
-            friction,
-            suspensionStiffness,
-            suspensionDamping,
-            suspensionCompression,
-            suspensionRestLength,
-            rollInfluence
-        );
-
-        this.#createWheel(
-            vehicle,
-            tuning,
-            this.#wheelsMeshes[2]!,
-            false,
-            friction,
-            suspensionStiffness,
-            suspensionDamping,
-            suspensionCompression,
-            suspensionRestLength,
-            rollInfluence
-        );
-
-        this.#createWheel(
-            vehicle,
-            tuning,
-            this.#wheelsMeshes[3]!,
-            false,
-            friction,
-            suspensionStiffness,
-            suspensionDamping,
-            suspensionCompression,
-            suspensionRestLength,
-            rollInfluence
-        );
-    }
-
     #createWheel(
         vehicle: Ammo.btRaycastVehicle,
         tuning: Ammo.btVehicleTuning,
         object: THREE.Object3D,
-        isFrontWheel: boolean,
-        friction: number,
-        suspensionStiffness: number,
-        suspensionDamping: number,
-        suspensionCompression: number,
-        suspensionRestLength: number,
-        rollInfluence: number
+        options?: WheelOptions
     ): void {
+        const isFrontWheel = options?.isFrontWheel ?? false;
+        const friction = options?.friction ?? 1000;
+        const suspensionStiffness = options?.suspensionStiffness ?? 15.0;
+        const suspensionDamping = options?.suspensionDamping ?? 0.5;
+        const suspensionCompression = options?.suspensionCompression ?? 5.0;
+        const suspensionRestLength = options?.suspensionRestLength ?? 0.5;
+        const rollInfluence = options?.rollInfluence ?? 0.5;
+
+        let radius = options?.radius || null;
+        if (!radius) {
+            const size = ObjectUtils.getBoundingBoxSize(object);
+            radius = size.y / 2;
+        }
+
         // wheels direction and axle setup
         const wheelDirectionCS0 = new Physics.Ammo.btVector3(0, -1, 0);
         const wheelAxleCS = new Physics.Ammo.btVector3(-1, 0, 0);
 
         const position = new Physics.Ammo.btVector3(object.position.x, object.position.y, object.position.z);
-
-        // TODO accept radius as parameter
-        let radius: number;
 
         // if radius is not passed, calculate it from the object size
         if (!radius) {
