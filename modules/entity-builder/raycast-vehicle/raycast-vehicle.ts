@@ -6,13 +6,7 @@ import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
 import { WheelOptions } from "./types";
-
-enum WheelIndex {
-    FRONT_LEFT = 0,
-    FRONT_RIGHT = 1,
-    BACK_LEFT = 2,
-    BACK_RIGHT = 3
-}
+import { WheelIndex, WheelState } from "./enums";
 
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
