@@ -25,9 +25,9 @@ class RaycastVehicleEntity extends Entity {
 
 const createChassis = (): THREE.Object3D => {
     const chassis = new THREE.Object3D();
-    
+
     const material = new THREE.MeshNormalMaterial();
-    
+
     const baseGeo = new THREE.BoxGeometry(2, 1, 5);
     const baseMesh = new THREE.Mesh(baseGeo, material);
     chassis.add(baseMesh);
@@ -38,6 +38,6 @@ const createChassis = (): THREE.Object3D => {
     chassis.add(topMesh);
 
     return chassis;
-}
+};
 
 export { RaycastVehicleEntity };

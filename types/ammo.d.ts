@@ -231,7 +231,9 @@ declare module "ammo" {
             set_m_wheelAxleWS(m_wheelAxleWS: btVector3): void;
             get_m_isInContact(): boolean;
             set_m_isInContact(m_isInContact: boolean): void;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             get_m_groundObject(): any;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             set_m_groundObject(m_groundObject: any): void;
         }
 
