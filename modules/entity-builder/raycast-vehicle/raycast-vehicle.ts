@@ -37,7 +37,7 @@ class RaycastVehicleEntity extends Entity {
         car.add(leftBackWheel);
         car.add(rightBackWheel);
 
-        super(car);
+        super(car, options);
         this.#chassisMesh = chassis;
 
         // register the wheels. The order matters here,
