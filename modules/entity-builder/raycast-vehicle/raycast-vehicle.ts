@@ -20,6 +20,7 @@ class RaycastVehicleEntity extends Entity {
         rightBackWheel: THREE.Object3D,
         options?: EntityOptions
     ) { 
+        // creates the car object
         const car = new THREE.Object3D();
         car.add(chassis);
         car.add(leftFrontWheel);
@@ -29,6 +30,13 @@ class RaycastVehicleEntity extends Entity {
 
         super(car);
         this.#chassisMesh = chassis;
+
+        // register the wheels
+        // the order matters here, it's used in tickBodies() method
+        this.#wheelsMeshes.push(leftFrontWheel);
+        this.#wheelsMeshes.push(rightFrontWheel);
+        this.#wheelsMeshes.push(leftBackWheel);
+        this.#wheelsMeshes.push(rightBackWheel);
     }
 
     _createBody(): void {
@@ -86,21 +94,10 @@ class RaycastVehicleEntity extends Entity {
         const suspensionRestLength = 0.5;
         const rollInfluence = 0.5;
 
-        const createWheelMesh = (): THREE.Mesh => {
-            const geo = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);
-            const material = new THREE.MeshNormalMaterial();
-            const mesh = new THREE.Mesh(geo, material);
-            return mesh;
-        };
-
-        // right front wheel
-        const rightFrontMesh = createWheelMesh();
-        rightFrontMesh.position.set(1, -0.5, 1);
-        rightFrontMesh.rotation.y = Math.PI / 6;
         this.#createWheel(
             vehicle,
             tuning,
-            rightFrontMesh,
+            this.#wheelsMeshes[0]!,
             true,
             friction,
             suspensionStiffness,
@@ -109,17 +106,11 @@ class RaycastVehicleEntity extends Entity {
             suspensionRestLength,
             rollInfluence
         );
-        this.object.add(rightFrontMesh);
-        this.#wheelsMeshes.push(rightFrontMesh);
 
-        // left front wheel
-        const leftFrontMesh = createWheelMesh();
-        leftFrontMesh.position.set(-1, -0.5, 1);
-        leftFrontMesh.rotation.y = Math.PI / 6;
         this.#createWheel(
             vehicle,
             tuning,
-            leftFrontMesh,
+            this.#wheelsMeshes[1]!,
             true,
             friction,
             suspensionStiffness,
@@ -128,17 +119,11 @@ class RaycastVehicleEntity extends Entity {
             suspensionRestLength,
             rollInfluence
         );
-        this.object.add(leftFrontMesh);
-        this.#wheelsMeshes.push(leftFrontMesh);
 
-        // right back wheel
-        const rightBackMesh = createWheelMesh();
-        rightBackMesh.position.set(1, -0.5, -2);
-        rightBackMesh.rotation.y = Math.PI / 6;
         this.#createWheel(
             vehicle,
             tuning,
-            rightBackMesh,
+            this.#wheelsMeshes[2]!,
             false,
             friction,
             suspensionStiffness,
@@ -147,17 +132,11 @@ class RaycastVehicleEntity extends Entity {
             suspensionRestLength,
             rollInfluence
         );
-        this.object.add(rightBackMesh);
-        this.#wheelsMeshes.push(rightBackMesh);
 
-        // left back wheel
-        const leftBackMesh = createWheelMesh();
-        leftBackMesh.position.set(-1, -0.5, -2);
-        leftBackMesh.rotation.y = Math.PI / 6;
         this.#createWheel(
             vehicle,
             tuning,
-            leftBackMesh,
+            this.#wheelsMeshes[3]!,
             false,
             friction,
             suspensionStiffness,
@@ -166,8 +145,6 @@ class RaycastVehicleEntity extends Entity {
             suspensionRestLength,
             rollInfluence
         );
-        this.object.add(leftBackMesh);
-        this.#wheelsMeshes.push(leftBackMesh);
     }
 
     #createWheel(
