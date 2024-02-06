@@ -6,6 +6,13 @@ import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
 
+enum WheelIndex {
+    FRONT_LEFT = 0,
+    FRONT_RIGHT = 1,
+    BACK_LEFT = 2,
+    BACK_RIGHT = 3
+}
+
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
     #wheelsMeshes: THREE.Object3D[] = [];
@@ -19,7 +26,7 @@ class RaycastVehicleEntity extends Entity {
         leftBackWheel: THREE.Object3D,
         rightBackWheel: THREE.Object3D,
         options?: EntityOptions
-    ) { 
+    ) {
         // creates the car object
         const car = new THREE.Object3D();
         car.add(chassis);
@@ -31,8 +38,8 @@ class RaycastVehicleEntity extends Entity {
         super(car);
         this.#chassisMesh = chassis;
 
-        // register the wheels
-        // the order matters here, it's used in tickBodies() method
+        // register the wheels. The order matters here,
+        // it follows the order of the WheelIndex enum
         this.#wheelsMeshes.push(leftFrontWheel);
         this.#wheelsMeshes.push(rightFrontWheel);
         this.#wheelsMeshes.push(leftBackWheel);
@@ -64,8 +71,8 @@ class RaycastVehicleEntity extends Entity {
         console.log("speed", speed); // TODO: expose this
 
         const engineForce = 0.5; // TODO: support customizing engine force
-        this.#vehicle.applyEngineForce(engineForce, 2); // 2 === idx for right back wheel
-        this.#vehicle.applyEngineForce(engineForce, 3); // 3 === idx for right back wheel
+        this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_LEFT);
+        this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_RIGHT);
 
         let tm, p, q, i;
         const n = this.#vehicle.getNumWheels();
