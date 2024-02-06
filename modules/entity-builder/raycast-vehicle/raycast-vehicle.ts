@@ -15,6 +15,8 @@ class RaycastVehicleEntity extends Entity {
     #vehicle: Ammo.btRaycastVehicle;
     #currentSpeed: number = 0;
 
+    #wheelStates: Record<WheelIndex, WheelState>;
+
     constructor(
         chassis: THREE.Object3D,
         leftFrontWheel: THREE.Object3D,
@@ -40,6 +42,12 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelsMeshes.push(rightFrontWheel);
         this.#wheelsMeshes.push(leftBackWheel);
         this.#wheelsMeshes.push(rightBackWheel);
+        this.#wheelStates = {
+            [WheelIndex.FRONT_LEFT]: WheelState.NONE,
+            [WheelIndex.FRONT_RIGHT]: WheelState.NONE,
+            [WheelIndex.BACK_LEFT]: WheelState.NONE,
+            [WheelIndex.BACK_RIGHT]: WheelState.NONE
+        };
     }
 
     get speed(): number {
