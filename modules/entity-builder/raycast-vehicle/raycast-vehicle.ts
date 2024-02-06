@@ -72,8 +72,8 @@ class RaycastVehicleEntity extends Entity {
         // the order matters here, it follows the order of the WheelIndex enum
         this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_LEFT]!, { isFrontWheel: true });
         this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_RIGHT]!, { isFrontWheel: true });
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_LEFT]!, { isFrontWheel: true });
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_RIGHT]!, { isFrontWheel: true });
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_LEFT]!, { isFrontWheel: false });
+        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_RIGHT]!, { isFrontWheel: false });
     }
 
     tickBodies(): void {
