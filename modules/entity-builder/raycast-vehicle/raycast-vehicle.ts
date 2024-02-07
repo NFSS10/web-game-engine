@@ -5,17 +5,16 @@ import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
-import { WheelOptions } from "./types";
+import { type WheelData, type WheelOptions } from "./types";
 import { WheelIndex, WheelState } from "./enums";
 
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
-    #wheelsMeshes: THREE.Object3D[] = [];
     #chassisBody: Ammo.btRigidBody;
     #vehicle: Ammo.btRaycastVehicle;
     #currentSpeed: number = 0;
 
-    #wheelStates: Record<WheelIndex, WheelState>;
+    #wheelStates: Record<WheelIndex, WheelData>;
 
     constructor(
         chassis: THREE.Object3D,
@@ -36,17 +35,39 @@ class RaycastVehicleEntity extends Entity {
         super(car, options);
         this.#chassisMesh = chassis;
 
-        // register the wheels. The order matters here,
-        // it follows the order of the WheelIndex enum
-        this.#wheelsMeshes.push(leftFrontWheel);
-        this.#wheelsMeshes.push(rightFrontWheel);
-        this.#wheelsMeshes.push(leftBackWheel);
-        this.#wheelsMeshes.push(rightBackWheel);
-        this.#wheelStates = {
-            [WheelIndex.FRONT_LEFT]: WheelState.NONE,
-            [WheelIndex.FRONT_RIGHT]: WheelState.NONE,
-            [WheelIndex.BACK_LEFT]: WheelState.NONE,
-            [WheelIndex.BACK_RIGHT]: WheelState.NONE
+        // register the wheels
+        const defaultOptions = {
+            engineForce: 0.5,
+            brakeForce: 0.5,
+            isFrontWheel: false,
+            radius: 0,
+            friction: 1000,
+            suspensionStiffness: 15.0,
+            suspensionDamping: 0.5,
+            suspensionCompression: 5.0,
+            suspensionRestLength: 0.5,
+            rollInfluence: 0.5
+        };
+        this.#wheelStates = {} as Record<WheelIndex, WheelData>;
+        this.#wheelStates[WheelIndex.FRONT_LEFT] = {
+            mesh: leftFrontWheel,
+            state: WheelState.NONE,
+            options: { ...defaultOptions }
+        };
+        this.#wheelStates[WheelIndex.FRONT_RIGHT] = {
+            mesh: rightFrontWheel,
+            state: WheelState.NONE,
+            options: { ...defaultOptions }
+        };
+        this.#wheelStates[WheelIndex.BACK_LEFT] = {
+            mesh: leftBackWheel,
+            state: WheelState.NONE,
+            options: { ...defaultOptions }
+        };
+        this.#wheelStates[WheelIndex.BACK_RIGHT] = {
+            mesh: rightBackWheel,
+            state: WheelState.NONE,
+            options: { ...defaultOptions }
         };
     }
 
@@ -61,7 +82,7 @@ class RaycastVehicleEntity extends Entity {
     }
 
     setWheelState(wheel: WheelIndex, state: WheelState): void {
-        this.#wheelStates[wheel] = state;
+        this.#wheelStates[wheel].state = state;
     }
 
     _createBody(): void {
@@ -82,10 +103,30 @@ class RaycastVehicleEntity extends Entity {
         world.physicsWorld.addAction(this.#vehicle);
 
         // the order matters here, it follows the order of the WheelIndex enum
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_LEFT]!, { isFrontWheel: true });
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.FRONT_RIGHT]!, { isFrontWheel: true });
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_LEFT]!, { isFrontWheel: false });
-        this.#createWheel(this.#vehicle, tuning, this.#wheelsMeshes[WheelIndex.BACK_RIGHT]!, { isFrontWheel: false });
+        this.#createWheel(
+            this.#vehicle,
+            tuning,
+            this.#wheelStates[WheelIndex.FRONT_LEFT].mesh,
+            this.#wheelStates[WheelIndex.FRONT_LEFT].options
+        );
+        this.#createWheel(
+            this.#vehicle,
+            tuning,
+            this.#wheelStates[WheelIndex.FRONT_RIGHT].mesh,
+            this.#wheelStates[WheelIndex.FRONT_RIGHT].options
+        );
+        this.#createWheel(
+            this.#vehicle,
+            tuning,
+            this.#wheelStates[WheelIndex.BACK_LEFT].mesh,
+            this.#wheelStates[WheelIndex.BACK_LEFT].options
+        );
+        this.#createWheel(
+            this.#vehicle,
+            tuning,
+            this.#wheelStates[WheelIndex.BACK_RIGHT].mesh,
+            this.#wheelStates[WheelIndex.BACK_RIGHT].options
+        );
     }
 
     tickBodies(): void {
@@ -98,12 +139,14 @@ class RaycastVehicleEntity extends Entity {
         let tm, p, q, i;
         const n = this.#vehicle.getNumWheels();
         for (i = 0; i < n; i++) {
+            i = i as WheelIndex;
+
             this.#vehicle.updateWheelTransform(i, true);
             tm = this.#vehicle.getWheelTransformWS(i);
             p = tm.getOrigin();
             q = tm.getRotation();
-            this.#wheelsMeshes[i]!.position.set(p.x(), p.y(), p.z());
-            this.#wheelsMeshes[i]!.quaternion.set(q.x(), q.y(), q.z(), q.w());
+            this.#wheelStates[i].mesh.position.set(p.x(), p.y(), p.z());
+            this.#wheelStates[i].mesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
         }
 
         tm = this.#vehicle.getChassisWorldTransform();
@@ -123,33 +166,29 @@ class RaycastVehicleEntity extends Entity {
         vehicle: Ammo.btRaycastVehicle,
         tuning: Ammo.btVehicleTuning,
         object: THREE.Object3D,
-        options?: WheelOptions
+        options: WheelOptions
     ): void {
-        const isFrontWheel = options?.isFrontWheel ?? false;
-        const friction = options?.friction ?? 1000;
-        const suspensionStiffness = options?.suspensionStiffness ?? 15.0;
-        const suspensionDamping = options?.suspensionDamping ?? 0.5;
-        const suspensionCompression = options?.suspensionCompression ?? 5.0;
-        const suspensionRestLength = options?.suspensionRestLength ?? 0.5;
-        const rollInfluence = options?.rollInfluence ?? 0.5;
+        const isFrontWheel = options.isFrontWheel;
+        const friction = options.friction;
+        const suspensionStiffness = options.suspensionStiffness;
+        const suspensionDamping = options.suspensionDamping;
+        const suspensionCompression = options.suspensionCompression;
+        const suspensionRestLength = options.suspensionRestLength;
+        const rollInfluence = options.rollInfluence;
 
-        let radius = options?.radius || null;
+        // if radius is not passed, calculate it from the object size
+        let radius = options.radius || null;
         if (!radius) {
             const size = ObjectUtils.getBoundingBoxSize(object);
             radius = size.y / 2;
         }
+
+        // calculate position based on position
+        const position = new Physics.Ammo.btVector3(object.position.x, object.position.y, object.position.z);
 
         // wheels direction and axle setup
         const wheelDirectionCS0 = new Physics.Ammo.btVector3(0, -1, 0);
         const wheelAxleCS = new Physics.Ammo.btVector3(-1, 0, 0);
-
-        const position = new Physics.Ammo.btVector3(object.position.x, object.position.y, object.position.z);
-
-        // if radius is not passed, calculate it from the object size
-        if (!radius) {
-            const size = ObjectUtils.getBoundingBoxSize(object);
-            radius = size.y / 2;
-        }
 
         const wheelInfo = vehicle.addWheel(
             position,
