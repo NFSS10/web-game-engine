@@ -103,30 +103,10 @@ class RaycastVehicleEntity extends Entity {
         world.physicsWorld.addAction(this.#vehicle);
 
         // the order matters here, it follows the order of the WheelIndex enum
-        this.#createWheel(
-            this.#vehicle,
-            tuning,
-            this.#wheelStates[WheelIndex.FRONT_LEFT].mesh,
-            this.#wheelStates[WheelIndex.FRONT_LEFT].options
-        );
-        this.#createWheel(
-            this.#vehicle,
-            tuning,
-            this.#wheelStates[WheelIndex.FRONT_RIGHT].mesh,
-            this.#wheelStates[WheelIndex.FRONT_RIGHT].options
-        );
-        this.#createWheel(
-            this.#vehicle,
-            tuning,
-            this.#wheelStates[WheelIndex.BACK_LEFT].mesh,
-            this.#wheelStates[WheelIndex.BACK_LEFT].options
-        );
-        this.#createWheel(
-            this.#vehicle,
-            tuning,
-            this.#wheelStates[WheelIndex.BACK_RIGHT].mesh,
-            this.#wheelStates[WheelIndex.BACK_RIGHT].options
-        );
+        this.#createWheel(WheelIndex.FRONT_LEFT, this.#vehicle, tuning);
+        this.#createWheel(WheelIndex.FRONT_RIGHT, this.#vehicle, tuning);
+        this.#createWheel(WheelIndex.BACK_LEFT, this.#vehicle, tuning);
+        this.#createWheel(WheelIndex.BACK_RIGHT, this.#vehicle, tuning);
     }
 
     tickBodies(): void {
@@ -162,29 +142,30 @@ class RaycastVehicleEntity extends Entity {
         // TODO
     }
 
-    #createWheel(
-        vehicle: Ammo.btRaycastVehicle,
-        tuning: Ammo.btVehicleTuning,
-        object: THREE.Object3D,
-        options: WheelOptions
-    ): void {
-        const isFrontWheel = options.isFrontWheel;
-        const friction = options.friction;
-        const suspensionStiffness = options.suspensionStiffness;
-        const suspensionDamping = options.suspensionDamping;
-        const suspensionCompression = options.suspensionCompression;
-        const suspensionRestLength = options.suspensionRestLength;
-        const rollInfluence = options.rollInfluence;
+    #createWheel(wheelIdx: WheelIndex, vehicle: Ammo.btRaycastVehicle, tuning: Ammo.btVehicleTuning): void {
+        const wheelData = this.#wheelStates[wheelIdx];
+
+        const isFrontWheel = wheelData.options.isFrontWheel;
+        const friction = wheelData.options.friction;
+        const suspensionStiffness = wheelData.options.suspensionStiffness;
+        const suspensionDamping = wheelData.options.suspensionDamping;
+        const suspensionCompression = wheelData.options.suspensionCompression;
+        const suspensionRestLength = wheelData.options.suspensionRestLength;
+        const rollInfluence = wheelData.options.rollInfluence;
 
         // if radius is not passed, calculate it from the object size
-        let radius = options.radius || null;
+        let radius = wheelData.options.radius || null;
         if (!radius) {
-            const size = ObjectUtils.getBoundingBoxSize(object);
+            const size = ObjectUtils.getBoundingBoxSize(wheelData.mesh);
             radius = size.y / 2;
         }
 
         // calculate position based on position
-        const position = new Physics.Ammo.btVector3(object.position.x, object.position.y, object.position.z);
+        const position = new Physics.Ammo.btVector3(
+            wheelData.mesh.position.x,
+            wheelData.mesh.position.y,
+            wheelData.mesh.position.z
+        );
 
         // wheels direction and axle setup
         const wheelDirectionCS0 = new Physics.Ammo.btVector3(0, -1, 0);
@@ -204,6 +185,7 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_wheelsDampingCompression(suspensionCompression);
         wheelInfo.set_m_frictionSlip(friction);
         wheelInfo.set_m_rollInfluence(rollInfluence);
+        this.#wheelStates[wheelIdx].wheelInfo = wheelInfo;
     }
 }
 
