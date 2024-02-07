@@ -116,24 +116,26 @@ class RaycastVehicleEntity extends Entity {
         this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_LEFT);
         this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_RIGHT);
 
-        let tm, p, q, i;
+        let transform, pos, quart, i;
         const n = this.#vehicle.getNumWheels();
         for (i = 0; i < n; i++) {
             i = i as WheelIndex;
 
             this.#vehicle.updateWheelTransform(i, true);
-            tm = this.#vehicle.getWheelTransformWS(i);
-            p = tm.getOrigin();
-            q = tm.getRotation();
-            this.#wheelStates[i].mesh.position.set(p.x(), p.y(), p.z());
-            this.#wheelStates[i].mesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
+            transform = this.#vehicle.getWheelTransformWS(i);
+            pos = transform.getOrigin();
+            quart = transform.getRotation();
+
+            const wheelData = this.#wheelStates[i];
+            wheelData.mesh.position.set(pos.x(), pos.y(), pos.z());
+            wheelData.mesh.quaternion.set(quart.x(), quart.y(), quart.z(), quart.w());
         }
 
-        tm = this.#vehicle.getChassisWorldTransform();
-        p = tm.getOrigin();
-        q = tm.getRotation();
-        this.#chassisMesh.position.set(p.x(), p.y(), p.z());
-        this.#chassisMesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
+        transform = this.#vehicle.getChassisWorldTransform();
+        pos = transform.getOrigin();
+        quart = transform.getRotation();
+        this.#chassisMesh.position.set(pos.x(), pos.y(), pos.z());
+        this.#chassisMesh.quaternion.set(quart.x(), quart.y(), quart.z(), quart.w());
     }
 
     destroy(): void {
