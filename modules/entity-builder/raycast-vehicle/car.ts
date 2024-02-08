@@ -8,13 +8,13 @@ class CarEntity extends RaycastVehicleEntity {
     constructor(options?: EntityOptions) {
         const chassis = createChassis();
         const frontLeftWheel = createWheel();
-        frontLeftWheel.position.set(-1, -0.5, 1);
+        frontLeftWheel.position.set(1, -0.5, 1);
         const frontRightWheel = createWheel();
-        frontRightWheel.position.set(1, -0.5, 1);
+        frontRightWheel.position.set(-1, -0.5, 1);
         const backLeftWheel = createWheel();
-        backLeftWheel.position.set(-1, -0.5, -2);
+        backLeftWheel.position.set(1, -0.5, -2);
         const backRightWheel = createWheel();
-        backRightWheel.position.set(1, -0.5, -2);
+        backRightWheel.position.set(-1, -0.5, -2);
 
         super(chassis, frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, options);
 
