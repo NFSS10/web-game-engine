@@ -38,7 +38,7 @@ class RaycastVehicleEntity extends Entity {
         // register the wheels
         const defaultOptions = {
             engineForce: 0.5,
-            brakeForce: 0.5,
+            brakeForce: 0.05,
             isFrontWheel: false,
             radius: 0,
             friction: 1000,
@@ -127,13 +127,12 @@ class RaycastVehicleEntity extends Entity {
     tickBodies(): void {
         this.#currentSpeed = this.#vehicle.getCurrentSpeedKmHour();
 
-        const engineForce = 0.5; // TODO: support customizing engine force
-        this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_LEFT);
-        this.#vehicle.applyEngineForce(engineForce, WheelIndex.BACK_RIGHT);
+        const wheelsNum = this.#vehicle.getNumWheels();
+
+        this.#tickWheelsState(wheelsNum, this.#vehicle, this.#currentSpeed);
 
         let transform, pos, quart, i;
-        const n = this.#vehicle.getNumWheels();
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < wheelsNum; i++) {
             i = i as WheelIndex;
 
             this.#vehicle.updateWheelTransform(i, true);
@@ -202,6 +201,33 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_wheelsDampingCompression(suspensionCompression);
         wheelInfo.set_m_frictionSlip(friction);
         wheelInfo.set_m_rollInfluence(rollInfluence);
+    }
+
+    #tickWheelsState(wheelsNum: number, vehicle: Ammo.btRaycastVehicle, speed: number): void {
+        for (let i = 0; i < wheelsNum; i++) {
+            const wheelData = this.#wheelStates[i as WheelIndex];
+            switch (wheelData.state) {
+                case WheelState.NONE:
+                    continue;
+                case WheelState.ACCELERATING:
+                    vehicle.applyEngineForce(wheelData.options.engineForce, i);
+                    break;
+                case WheelState.BRAKING:
+                    vehicle.setBrake(wheelData.options.brakeForce, i);
+                    break;
+                case WheelState.REVERSING:
+                    vehicle.applyEngineForce(-wheelData.options.engineForce, i);
+                    break;
+                case WheelState.STEERING_LEFT:
+                    vehicle.setSteeringValue(0.6, i); // TODO: support customizing steering value
+                    break;
+                case WheelState.STEERING_RIGHT:
+                    vehicle.setSteeringValue(-0.6, i); // TODO: support customizing steering value
+                    break;
+                default:
+                    throw new Error("Invalid wheel state");
+            }
+        }
     }
 }
 
