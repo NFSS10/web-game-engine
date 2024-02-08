@@ -40,7 +40,7 @@ class RaycastVehicleEntity extends Entity {
             engineForce: 0.5,
             brakeForce: 0.5,
             isFrontWheel: false,
-            radius: 0.5,
+            radius: 0,
             friction: 1000,
             suspensionStiffness: 15.0,
             suspensionDamping: 0.5,
@@ -76,18 +76,21 @@ class RaycastVehicleEntity extends Entity {
     }
 
     setWheelProperties(wheel: WheelIndex, options: Partial<WheelOptions>): RaycastVehicleEntity {
+        // update the wheel options
         const wheelData = this.#wheelStates[wheel];
         wheelData.options = {
             ...this.#wheelStates[wheel].options,
             ...options
         };
 
+        // apply the new options to the wheel
         const wheelInfo = this.#vehicle.getWheelInfo(wheel);
+        wheelInfo.set_m_bIsFrontWheel(wheelData.options.isFrontWheel);
         wheelInfo.set_m_wheelsRadius(wheelData.options.radius);
+        wheelInfo.set_m_frictionSlip(wheelData.options.friction);
         wheelInfo.set_m_suspensionStiffness(wheelData.options.suspensionStiffness);
         wheelInfo.set_m_wheelsDampingRelaxation(wheelData.options.suspensionDamping);
         wheelInfo.set_m_wheelsDampingCompression(wheelData.options.suspensionCompression);
-        wheelInfo.set_m_frictionSlip(wheelData.options.friction);
         wheelInfo.set_m_rollInfluence(wheelData.options.rollInfluence);
 
         return this;
