@@ -40,7 +40,7 @@ class RaycastVehicleEntity extends Entity {
             engineForce: 0.5,
             brakeForce: 0.5,
             isFrontWheel: false,
-            radius: 0,
+            radius: 0.5,
             friction: 1000,
             suspensionStiffness: 15.0,
             suspensionDamping: 0.5,
@@ -75,8 +75,20 @@ class RaycastVehicleEntity extends Entity {
         return this.#currentSpeed;
     }
 
-    setWheelProperties(wheel: WheelIndex, options: WheelOptions): RaycastVehicleEntity {
-        // TODO
+    setWheelProperties(wheel: WheelIndex, options: Partial<WheelOptions>): RaycastVehicleEntity {
+        const wheelData = this.#wheelStates[wheel];
+        wheelData.options = {
+            ...this.#wheelStates[wheel].options,
+            ...options
+        };
+
+        const wheelInfo = this.#vehicle.getWheelInfo(wheel);
+        wheelInfo.set_m_wheelsRadius(wheelData.options.radius);
+        wheelInfo.set_m_suspensionStiffness(wheelData.options.suspensionStiffness);
+        wheelInfo.set_m_wheelsDampingRelaxation(wheelData.options.suspensionDamping);
+        wheelInfo.set_m_wheelsDampingCompression(wheelData.options.suspensionCompression);
+        wheelInfo.set_m_frictionSlip(wheelData.options.friction);
+        wheelInfo.set_m_rollInfluence(wheelData.options.rollInfluence);
 
         return this;
     }
@@ -187,7 +199,6 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_wheelsDampingCompression(suspensionCompression);
         wheelInfo.set_m_frictionSlip(friction);
         wheelInfo.set_m_rollInfluence(rollInfluence);
-        this.#wheelStates[wheelIdx].wheelInfo = wheelInfo;
     }
 }
 

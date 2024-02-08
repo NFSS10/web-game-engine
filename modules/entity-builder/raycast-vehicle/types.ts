@@ -1,11 +1,8 @@
-import { type Ammo } from "ammo";
-
 import { WheelState } from "./enums";
 
 type WheelData = {
     mesh: THREE.Object3D;
     state: WheelState;
-    wheelInfo?: Ammo.btWheelInfo;
     options: WheelOptions;
 };
 
