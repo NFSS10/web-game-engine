@@ -47,5 +47,38 @@
 
         gameEngine.setScene(scene);
         gameEngine.start();
+
+        // example of basic controls for the car
+        const keys = { w: false, a: false, s: false, d: false };
+        const control = () => {
+            if (keys.w) {
+                car.accelerate();
+            } else if (keys.s) {
+                car.reverse();
+            } else {
+                car.clearMovementState();
+            }
+
+            if (keys.a) {
+                car.steerLeft();
+            } else if (keys.d) {
+                car.steerRight();
+            } else {
+                car.steerNone();
+            }
+        }
+        
+        window.addEventListener("keydown", function (event) {
+            if (event.key in keys) {
+                keys[event.key] = true;
+            }
+            control();
+        });
+        window.addEventListener("keyup", function (event) {
+            if (event.key in keys) {
+                keys[event.key] = false;
+            }
+            control();
+        });
     </script>
 </html>
