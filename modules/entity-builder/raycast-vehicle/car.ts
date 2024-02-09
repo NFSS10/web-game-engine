@@ -17,6 +17,13 @@ class CarEntity extends RaycastVehicleEntity {
         backRightWheel.position.set(-1, -0.5, -2);
 
         super(chassis, frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel, options);
+
+        this.setWheelProperties(WheelIndex.FRONT_LEFT, {
+            isFrontWheel: true
+        });
+        this.setWheelProperties(WheelIndex.FRONT_RIGHT, {
+            isFrontWheel: true
+        });
     }
 
     accelerate(): void {
