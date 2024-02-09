@@ -228,14 +228,19 @@ class RaycastVehicleEntity extends Entity {
             // update the movement
             switch (wheelData.movementState) {
                 case MovementState.NONE:
+                    vehicle.setBrake(0, i);
+                    vehicle.applyEngineForce(0, i);
                     break;
                 case MovementState.ACCELERATING:
+                    vehicle.setBrake(0, i);
                     vehicle.applyEngineForce(wheelData.options.engineForce, i);
                     break;
                 case MovementState.BRAKING:
+                    vehicle.applyEngineForce(0, i);
                     vehicle.setBrake(wheelData.options.brakeForce, i);
                     break;
                 case MovementState.REVERSING:
+                    vehicle.setBrake(0, i);
                     vehicle.applyEngineForce(-wheelData.options.engineForce, i);
                     break;
                 default:
