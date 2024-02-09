@@ -90,14 +90,18 @@ class RaycastVehicleEntity extends Entity {
         };
 
         // apply the new options to the wheel
-        const wheelInfo = this.#vehicle.getWheelInfo(wheel);
-        wheelInfo.set_m_bIsFrontWheel(wheelData.options.isFrontWheel);
-        wheelInfo.set_m_wheelsRadius(wheelData.options.radius);
-        wheelInfo.set_m_frictionSlip(wheelData.options.friction);
-        wheelInfo.set_m_suspensionStiffness(wheelData.options.suspensionStiffness);
-        wheelInfo.set_m_wheelsDampingRelaxation(wheelData.options.suspensionDamping);
-        wheelInfo.set_m_wheelsDampingCompression(wheelData.options.suspensionCompression);
-        wheelInfo.set_m_rollInfluence(wheelData.options.rollInfluence);
+        try {
+            const wheelInfo = this.#vehicle.getWheelInfo(wheel);
+            wheelInfo.set_m_bIsFrontWheel(wheelData.options.isFrontWheel);
+            wheelInfo.set_m_wheelsRadius(wheelData.options.radius);
+            wheelInfo.set_m_frictionSlip(wheelData.options.friction);
+            wheelInfo.set_m_suspensionStiffness(wheelData.options.suspensionStiffness);
+            wheelInfo.set_m_wheelsDampingRelaxation(wheelData.options.suspensionDamping);
+            wheelInfo.set_m_wheelsDampingCompression(wheelData.options.suspensionCompression);
+            wheelInfo.set_m_rollInfluence(wheelData.options.rollInfluence);
+        } catch (e) {
+            // ignore error if the vehicle is not yet created
+        }
 
         return this;
     }
@@ -214,7 +218,7 @@ class RaycastVehicleEntity extends Entity {
             const wheelData = this.#wheelStates[i as WheelIndex];
             switch (wheelData.state) {
                 case WheelState.NONE:
-                    continue;
+                    break;
                 case WheelState.ACCELERATING:
                     vehicle.applyEngineForce(wheelData.options.engineForce, i);
                     break;
