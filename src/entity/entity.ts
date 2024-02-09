@@ -74,7 +74,7 @@ class Entity {
         this.#id = null;
     }
 
-    tickBodies(): void {
+    tickBodies(dt: number): void {
         throw new Error("Method not implemented");
     }
 

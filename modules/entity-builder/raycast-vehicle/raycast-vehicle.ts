@@ -124,7 +124,7 @@ class RaycastVehicleEntity extends Entity {
         this.#createWheel(WheelIndex.BACK_RIGHT, this.#vehicle, tuning);
     }
 
-    tickBodies(): void {
+    tickBodies(dt: number): void {
         this.#currentSpeed = this.#vehicle.getCurrentSpeedKmHour();
 
         const wheelsNum = this.#vehicle.getNumWheels();

@@ -39,7 +39,7 @@ class World {
 
         for (let i = 0; i < this.#entities.length; i++) {
             const entity = this.#entities[i] as Entity;
-            entity.tickBodies();
+            entity.tickBodies(dt);
         }
     }
 

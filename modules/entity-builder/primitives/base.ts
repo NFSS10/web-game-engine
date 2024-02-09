@@ -15,7 +15,7 @@ class PrimitiveEntity extends Entity {
         this.#auxTransform = new Physics.Ammo.btTransform();
     }
 
-    tickBodies(): void {
+    tickBodies(dt: number): void {
         for (let i = 0; i < this.bodies.length; i++) {
             const body = this.bodies[i] as Body;
 
