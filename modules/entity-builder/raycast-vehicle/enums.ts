@@ -5,13 +5,17 @@ enum WheelIndex {
     BACK_RIGHT = 3
 }
 
-enum WheelState {
+enum MovementState {
     NONE = 0,
-    STEERING_LEFT = 1,
-    STEERING_RIGHT = 2,
-    ACCELERATING = 3,
-    BRAKING = 4,
-    REVERSING = 5
+    ACCELERATING = 1,
+    BRAKING = 2,
+    REVERSING = 3
 }
 
-export { WheelIndex, WheelState };
+enum SteeringState {
+    NONE = 0,
+    LEFT = 1,
+    RIGHT = 2
+}
+
+export { WheelIndex, MovementState, SteeringState };

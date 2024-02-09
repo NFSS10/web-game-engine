@@ -6,7 +6,7 @@ import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
 import { type WheelData, type WheelOptions } from "./types";
-import { WheelIndex, WheelState } from "./enums";
+import { WheelIndex, SteeringState, MovementState } from "./enums";
 
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
@@ -53,25 +53,29 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelStates = {} as Record<WheelIndex, WheelData>;
         this.#wheelStates[WheelIndex.FRONT_LEFT] = {
             mesh: leftFrontWheel,
-            state: WheelState.NONE,
+            movementState: MovementState.NONE,
+            steeringState: SteeringState.NONE,
             steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.FRONT_RIGHT] = {
             mesh: rightFrontWheel,
-            state: WheelState.NONE,
+            movementState: MovementState.NONE,
+            steeringState: SteeringState.NONE,
             steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.BACK_LEFT] = {
             mesh: leftBackWheel,
-            state: WheelState.NONE,
+            movementState: MovementState.NONE,
+            steeringState: SteeringState.NONE,
             steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.BACK_RIGHT] = {
             mesh: rightBackWheel,
-            state: WheelState.NONE,
+            movementState: MovementState.NONE,
+            steeringState: SteeringState.NONE,
             steeringValue: 0,
             options: { ...defaultOptions }
         };
@@ -106,8 +110,12 @@ class RaycastVehicleEntity extends Entity {
         return this;
     }
 
-    setWheelState(wheel: WheelIndex, state: WheelState): void {
-        this.#wheelStates[wheel].state = state;
+    setMovementState(wheel: WheelIndex, state: MovementState): void {
+        this.#wheelStates[wheel].movementState = state;
+    }
+
+    setSteeringState(wheel: WheelIndex, state: SteeringState): void {
+        this.#wheelStates[wheel].steeringState = state;
     }
 
     _createBody(): void {
@@ -139,7 +147,7 @@ class RaycastVehicleEntity extends Entity {
 
         const wheelsNum = this.#vehicle.getNumWheels();
 
-        this.#tickWheelsState(dt, wheelsNum, this.#vehicle, this.#currentSpeed);
+        this.#tickWheelsState(dt, wheelsNum, this.#vehicle);
 
         let transform, pos, quart, i;
         for (i = 0; i < wheelsNum; i++) {
@@ -213,49 +221,57 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_rollInfluence(rollInfluence);
     }
 
-    #tickWheelsState(dt: number, wheelsNum: number, vehicle: Ammo.btRaycastVehicle, speed: number): void {
+    #tickWheelsState(dt: number, wheelsNum: number, vehicle: Ammo.btRaycastVehicle): void {
         for (let i = 0; i < wheelsNum; i++) {
             const wheelData = this.#wheelStates[i as WheelIndex];
-            switch (wheelData.state) {
-                case WheelState.NONE:
+
+            // update the movement
+            switch (wheelData.movementState) {
+                case MovementState.NONE:
                     break;
-                case WheelState.ACCELERATING:
+                case MovementState.ACCELERATING:
                     vehicle.applyEngineForce(wheelData.options.engineForce, i);
                     break;
-                case WheelState.BRAKING:
+                case MovementState.BRAKING:
                     vehicle.setBrake(wheelData.options.brakeForce, i);
                     break;
-                case WheelState.REVERSING:
+                case MovementState.REVERSING:
                     vehicle.applyEngineForce(-wheelData.options.engineForce, i);
                     break;
-                case WheelState.STEERING_LEFT:
+                default:
+                    throw new Error("Invalid movement state");
+            }
+
+            // update the steering
+            switch (wheelData.steeringState) {
+                case SteeringState.LEFT:
                     wheelData.steeringValue = Math.min(
                         wheelData.steeringValue + wheelData.options.steeringIncrement * dt,
                         wheelData.options.steeringLimit
                     );
                     break;
-                case WheelState.STEERING_RIGHT:
+                case SteeringState.RIGHT:
                     wheelData.steeringValue = Math.max(
                         wheelData.steeringValue - wheelData.options.steeringIncrement * dt,
                         -wheelData.options.steeringLimit
                     );
                     break;
+                case SteeringState.NONE:
+                    // reset the steering if the state is not steering
+                    if (wheelData.steeringValue < 0)
+                        wheelData.steeringValue = Math.min(
+                            wheelData.steeringValue + wheelData.options.steeringIncrement * dt,
+                            0
+                        );
+                    else if (wheelData.steeringValue > 0)
+                        wheelData.steeringValue = Math.max(
+                            wheelData.steeringValue - wheelData.options.steeringIncrement * dt,
+                            0
+                        );
+                    break;
                 default:
-                    throw new Error("Invalid wheel state");
+                    throw new Error("Invalid steering state");
             }
-
-            // reset the steering if the state is not steering
-            if (wheelData.state !== WheelState.STEERING_LEFT && wheelData.state !== WheelState.STEERING_RIGHT)
-                if (wheelData.steeringValue < 0)
-                    wheelData.steeringValue = Math.min(
-                        wheelData.steeringValue + wheelData.options.steeringIncrement * dt,
-                        0
-                    );
-                else if (wheelData.steeringValue > 0)
-                    wheelData.steeringValue = Math.max(
-                        wheelData.steeringValue - wheelData.options.steeringIncrement * dt,
-                        0
-                    );
 
             vehicle.setSteeringValue(wheelData.steeringValue, i);
         }

@@ -74,6 +74,7 @@ class Entity {
         this.#id = null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tickBodies(dt: number): void {
         throw new Error("Method not implemented");
     }

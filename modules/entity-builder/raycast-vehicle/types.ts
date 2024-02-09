@@ -1,8 +1,9 @@
-import { WheelState } from "./enums";
+import { MovementState, SteeringState } from "./enums";
 
 type WheelData = {
     mesh: THREE.Object3D;
-    state: WheelState;
+    movementState: MovementState;
+    steeringState: SteeringState;
     steeringValue: number;
     options: WheelOptions;
 };
