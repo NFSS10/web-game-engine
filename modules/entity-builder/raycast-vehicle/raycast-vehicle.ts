@@ -232,14 +232,17 @@ class RaycastVehicleEntity extends Entity {
                     vehicle.applyEngineForce(0, i);
                     break;
                 case MovementState.ACCELERATING:
+                    this.#chassisBody.setActivationState(BodySimulationState.ACTIVE);
                     vehicle.setBrake(0, i);
                     vehicle.applyEngineForce(wheelData.options.engineForce, i);
                     break;
                 case MovementState.BRAKING:
+                    this.#chassisBody.setActivationState(BodySimulationState.ACTIVE);
                     vehicle.applyEngineForce(0, i);
                     vehicle.setBrake(wheelData.options.brakeForce, i);
                     break;
                 case MovementState.REVERSING:
+                    this.#chassisBody.setActivationState(BodySimulationState.ACTIVE);
                     vehicle.setBrake(0, i);
                     vehicle.applyEngineForce(-wheelData.options.engineForce, i);
                     break;
