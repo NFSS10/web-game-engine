@@ -36,9 +36,11 @@ class RaycastVehicleEntity extends Entity {
         this.#chassisMesh = chassis;
 
         // register the wheels
-        const defaultOptions = {
+        const defaultOptions: WheelOptions = {
             engineForce: 0.5,
             brakeForce: 0.05,
+            steeringLimit: 0.65,
+            steeringIncrement: 1.5,
             isFrontWheel: false,
             radius: 0,
             friction: 1000,
@@ -52,21 +54,25 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelStates[WheelIndex.FRONT_LEFT] = {
             mesh: leftFrontWheel,
             state: WheelState.NONE,
+            steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.FRONT_RIGHT] = {
             mesh: rightFrontWheel,
             state: WheelState.NONE,
+            steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.BACK_LEFT] = {
             mesh: leftBackWheel,
             state: WheelState.NONE,
+            steeringValue: 0,
             options: { ...defaultOptions }
         };
         this.#wheelStates[WheelIndex.BACK_RIGHT] = {
             mesh: rightBackWheel,
             state: WheelState.NONE,
+            steeringValue: 0,
             options: { ...defaultOptions }
         };
     }
@@ -129,7 +135,7 @@ class RaycastVehicleEntity extends Entity {
 
         const wheelsNum = this.#vehicle.getNumWheels();
 
-        this.#tickWheelsState(wheelsNum, this.#vehicle, this.#currentSpeed);
+        this.#tickWheelsState(dt, wheelsNum, this.#vehicle, this.#currentSpeed);
 
         let transform, pos, quart, i;
         for (i = 0; i < wheelsNum; i++) {
@@ -203,7 +209,7 @@ class RaycastVehicleEntity extends Entity {
         wheelInfo.set_m_rollInfluence(rollInfluence);
     }
 
-    #tickWheelsState(wheelsNum: number, vehicle: Ammo.btRaycastVehicle, speed: number): void {
+    #tickWheelsState(dt: number, wheelsNum: number, vehicle: Ammo.btRaycastVehicle, speed: number): void {
         for (let i = 0; i < wheelsNum; i++) {
             const wheelData = this.#wheelStates[i as WheelIndex];
             switch (wheelData.state) {
@@ -219,14 +225,35 @@ class RaycastVehicleEntity extends Entity {
                     vehicle.applyEngineForce(-wheelData.options.engineForce, i);
                     break;
                 case WheelState.STEERING_LEFT:
-                    vehicle.setSteeringValue(0.6, i); // TODO: support customizing steering value
+                    wheelData.steeringValue = Math.min(
+                        wheelData.steeringValue + wheelData.options.steeringIncrement * dt,
+                        wheelData.options.steeringLimit
+                    );
                     break;
                 case WheelState.STEERING_RIGHT:
-                    vehicle.setSteeringValue(-0.6, i); // TODO: support customizing steering value
+                    wheelData.steeringValue = Math.max(
+                        wheelData.steeringValue - wheelData.options.steeringIncrement * dt,
+                        -wheelData.options.steeringLimit
+                    );
                     break;
                 default:
                     throw new Error("Invalid wheel state");
             }
+
+            // reset the steering if the state is not steering
+            if (wheelData.state !== WheelState.STEERING_LEFT && wheelData.state !== WheelState.STEERING_RIGHT)
+                if (wheelData.steeringValue < 0)
+                    wheelData.steeringValue = Math.min(
+                        wheelData.steeringValue + wheelData.options.steeringIncrement * dt,
+                        0
+                    );
+                else if (wheelData.steeringValue > 0)
+                    wheelData.steeringValue = Math.max(
+                        wheelData.steeringValue - wheelData.options.steeringIncrement * dt,
+                        0
+                    );
+
+            vehicle.setSteeringValue(wheelData.steeringValue, i);
         }
     }
 }
