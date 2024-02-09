@@ -7,6 +7,7 @@ import { Physics, World } from "@src/physics";
 import { ObjectUtils } from "@src/entity/utils";
 import { type WheelData, type WheelOptions } from "./types";
 import { WheelIndex, SteeringState, MovementState } from "./enums";
+import { BodySimulationState } from "@src/physics/enums";
 
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
