@@ -26,8 +26,16 @@ class CarEntity extends RaycastVehicleEntity {
         });
     }
 
+    clearMovementState(): void {
+        this.setMovementState(WheelIndex.FRONT_LEFT, MovementState.NONE);
+        this.setMovementState(WheelIndex.FRONT_RIGHT, MovementState.NONE);
+        this.setMovementState(WheelIndex.BACK_LEFT, MovementState.NONE);
+        this.setMovementState(WheelIndex.BACK_RIGHT, MovementState.NONE);
+    }
+
     accelerate(): void {
-        this.setMovementState(WheelIndex.FRONT_LEFT, MovementState.ACCELERATING);
+        this.setMovementState(WheelIndex.BACK_LEFT, MovementState.ACCELERATING);
+        this.setMovementState(WheelIndex.BACK_RIGHT, MovementState.ACCELERATING);
     }
 
     brake(): void {
@@ -52,6 +60,11 @@ class CarEntity extends RaycastVehicleEntity {
 
         this.setMovementState(WheelIndex.BACK_LEFT, MovementState.REVERSING);
         this.setMovementState(WheelIndex.BACK_RIGHT, MovementState.REVERSING);
+    }
+
+    steerNone(): void {
+        this.setSteeringState(WheelIndex.FRONT_LEFT, SteeringState.NONE);
+        this.setSteeringState(WheelIndex.FRONT_RIGHT, SteeringState.NONE);
     }
 
     steerLeft(): void {
