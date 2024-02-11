@@ -41,7 +41,8 @@
         scene.addEntity(floor);
 
         // creates a car entity
-        const car = entityBuilder.createRaycastVehicle();
+        const car = entityBuilder.createRaycastVehicle({ id: "car" });
+        car.object.position.set(0, -1.25, 0); // positions the car on top of the floor
         car.enablePhysics();
         scene.addEntity(car);
 
@@ -49,12 +50,14 @@
         gameEngine.start();
 
         // example of basic controls for the car
-        const keys = { w: false, a: false, s: false, d: false };
+        const keys = { w: false, a: false, s: false, d: false, space: false };
         const control = () => {
             if (keys.w) {
                 car.accelerate();
             } else if (keys.s) {
                 car.reverse();
+            } else if (keys.space) {
+                car.handbrake();
             } else {
                 car.clearMovementState();
             }
@@ -66,17 +69,23 @@
             } else {
                 car.steerNone();
             }
-        }
-        
+        };
+
         window.addEventListener("keydown", function (event) {
             if (event.key in keys) {
                 keys[event.key] = true;
+            }
+            if (event.key === " ") {
+                keys.space = true;
             }
             control();
         });
         window.addEventListener("keyup", function (event) {
             if (event.key in keys) {
                 keys[event.key] = false;
+            }
+            if (event.key === " ") {
+                keys.space = false;
             }
             control();
         });
