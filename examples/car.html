@@ -52,41 +52,24 @@
         // example of basic controls for the car
         const keys = { w: false, a: false, s: false, d: false, space: false };
         const control = () => {
-            if (keys.w) {
-                car.accelerate();
-            } else if (keys.s) {
-                car.reverse();
-            } else if (keys.space) {
-                car.handbrake();
-            } else {
-                car.clearMovementState();
-            }
+            if (keys.w) car.accelerate();
+            if (keys.s) car.reverse();
+            if (keys.space) car.handbrake();
+            if (!keys.w && !keys.s && !keys.space) car.clearMovementState();
 
-            if (keys.a) {
-                car.steerLeft();
-            } else if (keys.d) {
-                car.steerRight();
-            } else {
-                car.steerNone();
-            }
+            if (keys.a) car.steerLeft();
+            if (keys.d) car.steerRight();
+            if (!keys.a && !keys.d) car.steerNone();
         };
 
         window.addEventListener("keydown", function (event) {
-            if (event.key in keys) {
-                keys[event.key] = true;
-            }
-            if (event.key === " ") {
-                keys.space = true;
-            }
+            if (event.key in keys) keys[event.key] = true;
+            if (event.key === " ") keys.space = true;
             control();
         });
         window.addEventListener("keyup", function (event) {
-            if (event.key in keys) {
-                keys[event.key] = false;
-            }
-            if (event.key === " ") {
-                keys.space = false;
-            }
+            if (event.key in keys) keys[event.key] = false;
+            if (event.key === " ") keys.space = false;
             control();
         });
     </script>
