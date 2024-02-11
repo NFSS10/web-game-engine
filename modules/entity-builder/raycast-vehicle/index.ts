@@ -1,4 +1,4 @@
-import { CarEntity } from "./car";
+import { Car } from "./car";
 import { RaycastVehicleEntity } from "./raycast-vehicle";
 
-export { CarEntity, RaycastVehicleEntity };
+export { Car, RaycastVehicleEntity };

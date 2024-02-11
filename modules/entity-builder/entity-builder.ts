@@ -3,7 +3,7 @@ import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Capsule, Cone, Cube, Cylinder, Sphere } from "./primitives";
 import { PrimitiveType } from "./primitives/enums";
-import { CarEntity } from "./raycast-vehicle";
+import { Car } from "./raycast-vehicle";
 import { type EntityBuilderOptions } from "./types";
 
 class EntityBuilder extends Module {
@@ -36,7 +36,7 @@ class EntityBuilder extends Module {
     }
 
     createRaycastVehicle(): Entity {
-        return new CarEntity();
+        return new Car();
     }
 }
 

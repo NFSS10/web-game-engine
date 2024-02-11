@@ -4,7 +4,7 @@ import { type EntityOptions } from "@src/entity/types";
 import { RaycastVehicleEntity } from "./raycast-vehicle";
 import { WheelIndex, MovementState, SteeringState } from "./enums";
 
-class CarEntity extends RaycastVehicleEntity {
+class Car extends RaycastVehicleEntity {
     constructor(options?: EntityOptions) {
         const chassis = createChassis();
         const frontLeftWheel = createWheel();
@@ -110,4 +110,4 @@ const createWheel = (): THREE.Object3D => {
     return mesh;
 };
 
-export { CarEntity };
+export { Car };
