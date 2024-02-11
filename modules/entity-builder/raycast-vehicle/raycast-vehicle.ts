@@ -4,10 +4,11 @@ import { type Ammo } from "ammo";
 import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
+import { BodySimulationState } from "@src/physics/enums";
+import { type BodyOptions } from "@src/physics/types";
 import { ObjectUtils } from "@src/entity/utils";
 import { type WheelData, type WheelOptions } from "./types";
 import { WheelIndex, SteeringState, MovementState } from "./enums";
-import { BodySimulationState } from "@src/physics/enums";
 
 class RaycastVehicleEntity extends Entity {
     #chassisMesh: THREE.Object3D;
@@ -38,8 +39,8 @@ class RaycastVehicleEntity extends Entity {
 
         // register the wheels
         const defaultOptions: WheelOptions = {
-            engineForce: 0.5,
-            brakeForce: 0.05,
+            engineForce: 2500,
+            brakeForce: 75,
             steeringLimit: 0.65,
             steeringIncrement: 1.5,
             isFrontWheel: false,
@@ -47,8 +48,8 @@ class RaycastVehicleEntity extends Entity {
             friction: 1000,
             suspensionStiffness: 15.0,
             suspensionDamping: 0.5,
-            suspensionCompression: 5.0,
-            suspensionRestLength: 0.5,
+            suspensionCompression: 10.0,
+            suspensionRestLength: 0.1,
             rollInfluence: 0.5
         };
         this.#wheelStates = {} as Record<WheelIndex, WheelData>;
@@ -119,9 +120,12 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelStates[wheel].steeringState = state;
     }
 
-    _createBody(): void {
+    _createBody(bodyOptions?: BodyOptions): void {
         if (this.bodies.length > 0) return;
-        this.#chassisBody = Physics.createBoxBody(this.#chassisMesh);
+        this.#chassisBody = Physics.createBoxBody(this.#chassisMesh, {
+            mass: bodyOptions?.mass ?? 1500,
+            friction: bodyOptions?.friction ?? 1
+        });
         this.bodies.push(this.#chassisBody);
     }
 
