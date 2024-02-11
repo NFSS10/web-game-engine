@@ -39,7 +39,7 @@ class RaycastVehicleEntity extends Entity {
 
         // register the wheels
         const defaultOptions: WheelOptions = {
-            engineForce: 2500,
+            engineForce: 3000,
             brakeForce: 75,
             steeringLimit: 0.65,
             steeringIncrement: 1.5,
