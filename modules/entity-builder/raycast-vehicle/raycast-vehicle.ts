@@ -152,7 +152,7 @@ class RaycastVehicleEntity extends Entity {
 
         this.#tickWheelsState(dt, wheelsNum, this.#vehicle);
 
-        let transform: Ammo.btTransform, pos: Ammo.btVector3, quat: Ammo.btQuaternion, i: number;
+        let transform: Ammo.btTransform, pos: Ammo.btVector3, quat: Ammo.btQuaternion, i: WheelIndex;
         for (i = 0; i < wheelsNum; i++) {
             i = i as WheelIndex;
 
@@ -161,9 +161,19 @@ class RaycastVehicleEntity extends Entity {
             pos = transform.getOrigin();
             quat = transform.getRotation();
 
+            // convert world position to local position
+            const position = new THREE.Vector3(pos.x(), pos.y(), pos.z());
+            this.object.worldToLocal(position);
+
+            // convert world rotation to local rotation
+            const quaternion = new THREE.Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
+            const inverseQuat = this.object.quaternion.clone().invert();
+            quaternion.premultiply(inverseQuat);
+
+            // update the wheel mesh position and rotation
             const wheelData = this.#wheelStates[i];
-            wheelData.mesh.position.set(pos.x(), pos.y(), pos.z());
-            wheelData.mesh.quaternion.set(quat.x(), quat.y(), quat.z(), quat.w());
+            wheelData.mesh.position.copy(position);
+            wheelData.mesh.quaternion.copy(quaternion);
         }
 
         transform = this.#vehicle.getChassisWorldTransform();
