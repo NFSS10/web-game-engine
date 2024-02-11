@@ -144,31 +144,33 @@ class RaycastVehicleEntity extends Entity {
     }
 
     tickBodies(dt: number): void {
+        if (!this.isPhysicsEnabled) return;
+
         this.#currentSpeed = this.#vehicle.getCurrentSpeedKmHour();
 
         const wheelsNum = this.#vehicle.getNumWheels();
 
         this.#tickWheelsState(dt, wheelsNum, this.#vehicle);
 
-        let transform, pos, quart, i;
+        let transform: Ammo.btTransform, pos: Ammo.btVector3, quat: Ammo.btQuaternion, i: number;
         for (i = 0; i < wheelsNum; i++) {
             i = i as WheelIndex;
 
             this.#vehicle.updateWheelTransform(i, true);
             transform = this.#vehicle.getWheelTransformWS(i);
             pos = transform.getOrigin();
-            quart = transform.getRotation();
+            quat = transform.getRotation();
 
             const wheelData = this.#wheelStates[i];
             wheelData.mesh.position.set(pos.x(), pos.y(), pos.z());
-            wheelData.mesh.quaternion.set(quart.x(), quart.y(), quart.z(), quart.w());
+            wheelData.mesh.quaternion.set(quat.x(), quat.y(), quat.z(), quat.w());
         }
 
         transform = this.#vehicle.getChassisWorldTransform();
         pos = transform.getOrigin();
-        quart = transform.getRotation();
-        this.#chassisMesh.position.set(pos.x(), pos.y(), pos.z());
-        this.#chassisMesh.quaternion.set(quart.x(), quart.y(), quart.z(), quart.w());
+        quat = transform.getRotation();
+        this.object.position.set(pos.x(), pos.y(), pos.z());
+        this.object.quaternion.set(quat.x(), quat.y(), quat.z(), quat.w());
     }
 
     destroy(): void {
