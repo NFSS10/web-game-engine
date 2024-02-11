@@ -44,7 +44,14 @@ declare module "ammo" {
             getDistance(): number;
         }
 
-        export class btDynamicsWorld extends btCollisionWorld {}
+        export class btActionInterface {
+            updateAction(collisionWorld: btCollisionWorld, deltaTimeStep: number): void;
+        }
+
+        export class btDynamicsWorld extends btCollisionWorld {
+            addAction(action: btActionInterface): void;
+            removeAction(action: btActionInterface): void;
+        }
 
         export class btDiscreteDynamicsWorld extends btDynamicsWorld {
             constructor(
@@ -61,6 +68,180 @@ declare module "ammo" {
             addConstraint(constraint: btTypedConstraint, disableCollisionsBetweenLinkedBodies?: boolean): void;
             removeConstraint(constraint: btTypedConstraint): void;
             stepSimulation(timeStep: number, maxSubSteps?: number, fixedTimeStep?: number): number;
+        }
+
+        export class btRaycastVehicle extends btActionInterface {
+            constructor(tuning: btVehicleTuning, chassis: btRigidBody, raycaster: btVehicleRaycaster);
+            applyEngineForce(force: number, wheel: number): void;
+            setSteeringValue(steering: number, wheel: number): void;
+            getWheelTransformWS(wheelIndex: number): btTransform;
+            updateWheelTransform(wheelIndex: number, interpolatedTransform: boolean): void;
+            addWheel(
+                connectionPointCS0: btVector3,
+                wheelDirectionCS0: btVector3,
+                wheelAxleCS: btVector3,
+                suspensionRestLength: number,
+                wheelRadius: number,
+                tuning: btVehicleTuning,
+                isFrontWheel: boolean
+            ): btWheelInfo;
+            getNumWheels(): number;
+            getRigidBody(): btRigidBody;
+            getWheelInfo(index: number): btWheelInfo;
+            setBrake(brake: number, wheelIndex: number): void;
+            setCoordinateSystem(rightIndex: number, upIndex: number, forwardIndex: number): void;
+            getCurrentSpeedKmHour(): number;
+            getChassisWorldTransform(): btTransform;
+            rayCast(wheel: btWheelInfo): number;
+            updateVehicle(step: number): void;
+            resetSuspension(): void;
+            getSteeringValue(wheel: number): number;
+            updateWheelTransformsWS(wheel: btWheelInfo, interpolatedTransform?: boolean): void;
+            setPitchControl(pitch: number): void;
+            updateSuspension(deltaTime: number): void;
+            updateFriction(timeStep: number): void;
+            getRightAxis(): number;
+            getUpAxis(): number;
+            getForwardAxis(): number;
+            getForwardVector(): btVector3;
+            getUserConstraintType(): number;
+            setUserConstraintType(userConstraintType: number): void;
+            setUserConstraintId(uid: number): void;
+            getUserConstraintId(): number;
+        }
+
+        export class btVehicleTuning {
+            get_m_suspensionStiffness(): number;
+            set_m_suspensionStiffness(m_suspensionStiffness: number): void;
+            get_m_suspensionCompression(): number;
+            set_m_suspensionCompression(m_suspensionCompression: number): void;
+            get_m_suspensionDamping(): number;
+            set_m_suspensionDamping(m_suspensionDamping: number): void;
+            get_m_maxSuspensionTravelCm(): number;
+            set_m_maxSuspensionTravelCm(m_maxSuspensionTravelCm: number): void;
+            get_m_frictionSlip(): number;
+            set_m_frictionSlip(m_frictionSlip: number): void;
+            get_m_maxSuspensionForce(): number;
+            set_m_maxSuspensionForce(m_maxSuspensionForce: number): void;
+        }
+
+        export class btVehicleRaycaster {
+            castRay(from: btVector3, to: btVector3, result: btVehicleRaycasterResult): void;
+        }
+
+        export class btDefaultVehicleRaycaster extends btVehicleRaycaster {
+            constructor(world: btDynamicsWorld);
+        }
+
+        export class btVehicleRaycasterResult {
+            get_m_hitPointInWorld(): btVector3;
+            set_m_hitPointInWorld(m_hitPointInWorld: btVector3): void;
+            get_m_hitNormalInWorld(): btVector3;
+            set_m_hitNormalInWorld(m_hitNormalInWorld: btVector3): void;
+            get_m_distFraction(): number;
+            set_m_distFraction(m_distFraction: number): void;
+        }
+
+        export class btWheelInfo {
+            constructor(ci: btWheelInfoConstructionInfo);
+            get_m_suspensionStiffness(): number;
+            set_m_suspensionStiffness(m_suspensionStiffness: number): void;
+            get_m_frictionSlip(): number;
+            set_m_frictionSlip(m_frictionSlip: number): void;
+            get_m_engineForce(): number;
+            set_m_engineForce(m_engineForce: number): void;
+            get_m_rollInfluence(): number;
+            set_m_rollInfluence(m_rollInfluence: number): void;
+            get_m_suspensionRestLength1(): number;
+            set_m_suspensionRestLength1(m_suspensionRestLength1: number): void;
+            get_m_wheelsRadius(): number;
+            set_m_wheelsRadius(m_wheelsRadius: number): void;
+            get_m_wheelsDampingCompression(): number;
+            set_m_wheelsDampingCompression(m_wheelsDampingCompression: number): void;
+            get_m_wheelsDampingRelaxation(): number;
+            set_m_wheelsDampingRelaxation(m_wheelsDampingRelaxation: number): void;
+            get_m_steering(): number;
+            set_m_steering(m_steering: number): void;
+            get_m_maxSuspensionForce(): number;
+            set_m_maxSuspensionForce(m_maxSuspensionForce: number): void;
+            get_m_maxSuspensionTravelCm(): number;
+            set_m_maxSuspensionTravelCm(m_maxSuspensionTravelCm: number): void;
+            get_m_wheelsSuspensionForce(): number;
+            set_m_wheelsSuspensionForce(m_wheelsSuspensionForce: number): void;
+            get_m_bIsFrontWheel(): boolean;
+            set_m_bIsFrontWheel(m_bIsFrontWheel: boolean): void;
+            get_m_raycastInfo(): RaycastInfo;
+            set_m_raycastInfo(m_raycastInfo: RaycastInfo): void;
+            get_m_chassisConnectionPointCS(): btVector3;
+            set_m_chassisConnectionPointCS(m_chassisConnectionPointCS: btVector3): void;
+            getSuspensionRestLength(): number;
+            updateWheel(chassis: btRigidBody, raycastInfo: RaycastInfo): void;
+            get_m_worldTransform(): btTransform;
+            set_m_worldTransform(m_worldTransform: btTransform): void;
+            get_m_wheelDirectionCS(): btVector3;
+            set_m_wheelDirectionCS(m_wheelDirectionCS: btVector3): void;
+            get_m_wheelAxleCS(): btVector3;
+            set_m_wheelAxleCS(m_wheelAxleCS: btVector3): void;
+            get_m_rotation(): number;
+            set_m_rotation(m_rotation: number): void;
+            get_m_deltaRotation(): number;
+            set_m_deltaRotation(m_deltaRotation: number): void;
+            get_m_brake(): number;
+            set_m_brake(m_brake: number): void;
+            get_m_clippedInvContactDotSuspension(): number;
+            set_m_clippedInvContactDotSuspension(m_clippedInvContactDotSuspension: number): void;
+            get_m_suspensionRelativeVelocity(): number;
+            set_m_suspensionRelativeVelocity(m_suspensionRelativeVelocity: number): void;
+            get_m_skidInfo(): number;
+            set_m_skidInfo(m_skidInfo: number): void;
+        }
+
+        export class btWheelInfoConstructionInfo {
+            get_m_chassisConnectionCS(): btVector3;
+            set_m_chassisConnectionCS(m_chassisConnectionCS: btVector3): void;
+            get_m_wheelDirectionCS(): btVector3;
+            set_m_wheelDirectionCS(m_wheelDirectionCS: btVector3): void;
+            get_m_wheelAxleCS(): btVector3;
+            set_m_wheelAxleCS(m_wheelAxleCS: btVector3): void;
+            get_m_suspensionRestLength(): number;
+            set_m_suspensionRestLength(m_suspensionRestLength: number): void;
+            get_m_maxSuspensionTravelCm(): number;
+            set_m_maxSuspensionTravelCm(m_maxSuspensionTravelCm: number): void;
+            get_m_wheelRadius(): number;
+            set_m_wheelRadius(m_wheelRadius: number): void;
+            get_m_suspensionStiffness(): number;
+            set_m_suspensionStiffness(m_suspensionStiffness: number): void;
+            get_m_wheelsDampingCompression(): number;
+            set_m_wheelsDampingCompression(m_wheelsDampingCompression: number): void;
+            get_m_wheelsDampingRelaxation(): number;
+            set_m_wheelsDampingRelaxation(m_wheelsDampingRelaxation: number): void;
+            get_m_frictionSlip(): number;
+            set_m_frictionSlip(m_frictionSlip: number): void;
+            get_m_maxSuspensionForce(): number;
+            set_m_maxSuspensionForce(m_maxSuspensionForce: number): void;
+            get_m_bIsFrontWheel(): boolean;
+            set_m_bIsFrontWheel(m_bIsFrontWheel: boolean): void;
+        }
+
+        export class RaycastInfo {
+            get_m_contactNormalWS(): btVector3;
+            set_m_contactNormalWS(m_contactNormalWS: btVector3): void;
+            get_m_contactPointWS(): btVector3;
+            set_m_contactPointWS(m_contactPointWS: btVector3): void;
+            get_m_suspensionLength(): number;
+            set_m_suspensionLength(m_suspensionLength: number): void;
+            get_m_hardPointWS(): btVector3;
+            set_m_hardPointWS(m_hardPointWS: btVector3): void;
+            get_m_wheelDirectionWS(): btVector3;
+            set_m_wheelDirectionWS(m_wheelDirectionWS: btVector3): void;
+            get_m_wheelAxleWS(): btVector3;
+            set_m_wheelAxleWS(m_wheelAxleWS: btVector3): void;
+            get_m_isInContact(): boolean;
+            set_m_isInContact(m_isInContact: boolean): void;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            get_m_groundObject(): any;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            set_m_groundObject(m_groundObject: any): void;
         }
 
         export class btVector3 {

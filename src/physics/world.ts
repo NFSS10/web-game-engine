@@ -30,12 +30,16 @@ class World {
         return this.#bodies;
     }
 
+    get physicsWorld(): Ammo.btDiscreteDynamicsWorld {
+        return this.#physicsWorld;
+    }
+
     tick(dt: number): void {
         this.#physicsWorld.stepSimulation(dt, 10);
 
         for (let i = 0; i < this.#entities.length; i++) {
             const entity = this.#entities[i] as Entity;
-            entity.tickBodies();
+            entity.tickBodies(dt);
         }
     }
 

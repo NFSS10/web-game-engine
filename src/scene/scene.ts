@@ -31,7 +31,6 @@ class Scene {
         entity.sceneRef = this;
         this.#entities.push(entity);
         this.#scene.add(entity.object);
-        this.#world.addEntity(entity);
         this.addEntityToWorld(entity);
 
         return this;
@@ -39,6 +38,7 @@ class Scene {
 
     addEntityToWorld(entity: Entity): void {
         this.#world.addEntity(entity);
+        entity._onAddToWorld(this.#world);
     }
 
     removeEntity(id: string): void {
@@ -48,6 +48,7 @@ class Scene {
         const entity = this.#entities[index] as Entity;
 
         this.removeEntityFromWorld(entity);
+        entity._onRemoveFromWorld(this.#world);
         this.#scene.remove(entity.object);
         this.#entities.splice(index, 1);
     }

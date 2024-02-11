@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { Physics } from "@src/physics";
+import { Physics, World } from "@src/physics";
 import { type Body, type BodyOptions } from "@src/physics/types";
 import { Scene } from "@src/scene";
 import { Utils } from "@src/utils";
@@ -74,7 +74,8 @@ class Entity {
         this.#id = null;
     }
 
-    tickBodies(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tickBodies(dt: number): void {
         throw new Error("Method not implemented");
     }
 
@@ -85,6 +86,11 @@ class Entity {
         const body = Physics.createBoxBody(this.#object, options);
         this.#bodies.push(body);
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _onAddToWorld(world: World): void {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _onRemoveFromWorld(world: World): void {}
 }
 
 export { Entity };

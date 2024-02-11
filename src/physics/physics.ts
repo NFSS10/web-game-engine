@@ -90,17 +90,15 @@ abstract class Physics {
         shape.calculateLocalInertia(mass, localInertia);
 
         // rigid body initial transform
+        const worldPos = new THREE.Vector3();
+        const worldQuat = new THREE.Quaternion();
+        object.getWorldPosition(worldPos);
+        object.getWorldQuaternion(worldQuat);
+
         const transform = new this.#Ammo.btTransform();
         transform.setIdentity();
-        transform.setOrigin(new this.#Ammo.btVector3(object.position.x, object.position.y, object.position.z));
-        transform.setRotation(
-            new this.#Ammo.btQuaternion(
-                object.quaternion.x,
-                object.quaternion.y,
-                object.quaternion.z,
-                object.quaternion.w
-            )
-        );
+        transform.setOrigin(new this.#Ammo.btVector3(worldPos.x, worldPos.y, worldPos.z));
+        transform.setRotation(new this.#Ammo.btQuaternion(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w));
         const motionState = new this.#Ammo.btDefaultMotionState(transform);
 
         // create rigid body
