@@ -104,7 +104,8 @@ const createChassis = (): THREE.Object3D => {
 };
 
 const createWheel = (): THREE.Object3D => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
+    geometry.rotateZ(Math.PI / 2);
     const material = new THREE.MeshNormalMaterial();
     const mesh = new THREE.Mesh(geometry, material);
     return mesh;
