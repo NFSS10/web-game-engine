@@ -1,4 +1,5 @@
 /* eslint-disable */
+import modify from "rollup-plugin-modify";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
 import replace from "@rollup/plugin-replace";
 import esbuild from "rollup-plugin-esbuild";
@@ -13,6 +14,10 @@ const buildTarget = process.env.BUILD_TARGET || null;
 
 const input = "src/game-engine.ts";
 
+const removeDebuggerModifyOpts = {
+    find: /(?<!['"`])(Debugger\.[a-zA-Z]+)(?<!['"`])\s*(\((.*)\)|=\s*(.*)|;)?/g,
+    replace: match => ""
+};
 const replaceOpts = {
     include: ["src/game-engine.ts"],
     delimiters: ["<%", "%>"],
@@ -32,7 +37,13 @@ const terserOpts = {
 // ES Modules step
 const esmStep = {
     input: input,
-    plugins: [tsConfigPaths(), replace(replaceOpts), esbuild(), env === "PROD" ? terser(terserOpts) : undefined],
+    plugins: [
+        env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
+        tsConfigPaths(),
+        replace(replaceOpts),
+        esbuild(),
+        env === "PROD" ? terser(terserOpts) : undefined
+    ],
     output: {
         format: "es",
         dir: "dist/esm",
@@ -44,6 +55,7 @@ const esmStep = {
 const cjsStep = {
     input: input,
     plugins: [
+        env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
         replace(replaceOpts),
         esbuild({ tsconfig: "tsconfig.cjs.json" }),
@@ -60,6 +72,7 @@ const cjsStep = {
 const bundleStep = {
     input: input,
     plugins: [
+        env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
         replace(replaceOpts),
         esbuild(),
