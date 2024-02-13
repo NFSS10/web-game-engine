@@ -18,6 +18,10 @@ const removeDebuggerModifyOpts = {
     find: /(?<!['"`])(Debugger\.[a-zA-Z]+)(?<!['"`])\s*(\((.*)\)|=\s*(.*)|;)?/g,
     replace: match => ""
 };
+const removeDebuggerGetterModifyOpts = {
+    find: /return\s+Debugger;/g,
+    replace: match => "return {};"
+};
 const replaceOpts = {
     include: ["src/game-engine.ts"],
     delimiters: ["<%", "%>"],
@@ -38,6 +42,7 @@ const terserOpts = {
 const esmStep = {
     input: input,
     plugins: [
+        env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
         replace(replaceOpts),
@@ -55,6 +60,7 @@ const esmStep = {
 const cjsStep = {
     input: input,
     plugins: [
+        env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
         replace(replaceOpts),
@@ -72,6 +78,7 @@ const cjsStep = {
 const bundleStep = {
     input: input,
     plugins: [
+        env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
         replace(replaceOpts),
