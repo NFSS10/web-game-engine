@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+import { Debugger } from "@debugger";
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
 import { ModuleLoader, ModuleType } from "@src/loaders";
@@ -35,6 +36,10 @@ class GameEngine {
         return this.#element;
     }
 
+    get debugger(): Debugger {
+        return Debugger;
+    }
+
     async loadModule(name: ModuleType): Promise<Module> {
         const module = await ModuleLoader.loadModule(name);
         return module;
@@ -51,6 +56,7 @@ class GameEngine {
 
     setScene(scene: Scene): void {
         this.#scene = scene;
+        Debugger.setScene(scene);
     }
 
     #buildElement(): void {
@@ -62,8 +68,10 @@ class GameEngine {
 
         const dt = this.#clock.getDelta();
         this.#scene.tickPhysics(dt);
+        Debugger.onPhysicsTick();
 
         this.#renderer.render(this.#scene, this.#camera);
+        Debugger.onRender();
 
         requestAnimationFrame(() => this.#loop());
     }
