@@ -3,6 +3,25 @@ declare module "ammo" {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         export function destroy(obj: any): void;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        export function wrapPointer(ptr: number, castType: any): any;
+
+        export class DebugDrawer {
+            constructor();
+            drawLine(ptr: number, ptr: number, ptr: number): void;
+            drawContactPoint(
+                pointOnB: btVector3,
+                normalOnB: btVector3,
+                distance: number,
+                lifeTime: number,
+                color: btVector3
+            ): void;
+            reportErrorWarning(warningString: string): void;
+            draw3dText(location: btVector3, textString: string): void;
+            setDebugMode(debugMode: DebugDrawMode): void;
+            getDebugMode(): DebugDrawMode;
+        }
+
         export class btDefaultCollisionConfiguration {}
 
         export class btPersistentManifold {
@@ -19,8 +38,17 @@ declare module "ammo" {
             getManifoldByIndexInternal(index: number): btPersistentManifold;
         }
 
+        export class ContactResultCallback {}
+
         export class btCollisionDispatcher extends btDispatcher {
             constructor(collisionConfiguration: btDefaultCollisionConfiguration);
+        }
+
+        export class btOverlappingPairCallback {}
+
+        export class btOverlappingPairCache {
+            setInternalGhostPairCallback(ghostPairCallback: btOverlappingPairCallback): void;
+            getNumOverlappingPairs(): number;
         }
 
         export class btCollisionConfiguration {}
@@ -33,8 +61,61 @@ declare module "ammo" {
 
         export class btSequentialImpulseConstraintSolver {}
 
+        export class btDispatcherInfo {
+            get_m_timeStep(): number;
+            set_m_timeStep(m_timeStep: number): void;
+            get_m_stepCount(): number;
+            set_m_stepCount(m_stepCount: number): void;
+            get_m_dispatchFunc(): number;
+            set_m_dispatchFunc(m_dispatchFunc: number): void;
+            get_m_timeOfImpact(): number;
+            set_m_timeOfImpact(m_timeOfImpact: number): void;
+            get_m_useContinuous(): boolean;
+            set_m_useContinuous(m_useContinuous: boolean): void;
+            get_m_enableSatConvex(): boolean;
+            set_m_enableSatConvex(m_enableSatConvex: boolean): void;
+            get_m_enableSPU(): boolean;
+            set_m_enableSPU(m_enableSPU: boolean): void;
+            get_m_useEpa(): boolean;
+            set_m_useEpa(m_useEpa: boolean): void;
+            get_m_allowedCcdPenetration(): number;
+            set_m_allowedCcdPenetration(m_allowedCcdPenetration: number): void;
+            get_m_useConvexConservativeDistanceUtil(): boolean;
+            set_m_useConvexConservativeDistanceUtil(m_useConvexConservativeDistanceUtil: boolean): void;
+            get_m_convexConservativeDistanceThreshold(): number;
+            set_m_convexConservativeDistanceThreshold(m_convexConservativeDistanceThreshold: number): void;
+        }
+
         export class btCollisionWorld {
             getDispatcher(): btDispatcher;
+            rayTest(rayFromWorld: btVector3, rayToWorld: btVector3, resultCallback: RayResultCallback): void;
+            getPairCache(): btOverlappingPairCache;
+            getDispatchInfo(): btDispatcherInfo;
+            addCollisionObject(
+                collisionObject: btCollisionObject,
+                collisionFilterGroup?: number,
+                collisionFilterMask?: number
+            ): void;
+            removeCollisionObject(collisionObject: btCollisionObject): void;
+            getBroadphase(): btBroadphaseInterface;
+            convexSweepTest(
+                castShape: btConvexShape,
+                from: btTransform,
+                to: btTransform,
+                resultCallback: ConvexResultCallback,
+                allowedCcdPenetration: number
+            ): void;
+            contactPairTest(
+                colObjA: btCollisionObject,
+                colObjB: btCollisionObject,
+                resultCallback: ContactResultCallback
+            ): void;
+            contactTest(colObj: btCollisionObject, resultCallback: ContactResultCallback): void;
+            updateSingleAabb(colObj: btCollisionObject): void;
+            setDebugDrawer(debugDrawer: btIDebugDraw): void;
+            getDebugDrawer(): btIDebugDraw;
+            debugDrawWorld(): void;
+            debugDrawObject(worldTransform: btTransform, shape: btCollisionShape, color: btVector3): void;
         }
 
         export class btManifoldPoint {
@@ -432,6 +513,18 @@ declare module "ammo" {
             getUserPointer(): VoidPtr;
             setUserPointer(userPointer: VoidPtr): void;
             getBroadphaseHandle(): btBroadphaseProxy;
+        }
+
+        export class RayResultCallback {
+            hasHit(): boolean;
+            get_m_collisionFilterGroup(): number;
+            set_m_collisionFilterGroup(m_collisionFilterGroup: number): void;
+            get_m_collisionFilterMask(): number;
+            set_m_collisionFilterMask(m_collisionFilterMask: number): void;
+            get_m_closestHitFraction(): number;
+            set_m_closestHitFraction(m_closestHitFraction: number): void;
+            get_m_collisionObject(): btCollisionObject;
+            set_m_collisionObject(m_collisionObject: btCollisionObject): void;
         }
 
         export class btRigidBodyConstructionInfo {
