@@ -22,8 +22,8 @@ class GameEngine {
         width = width ?? 768;
         height = height ?? 768;
 
-        Debugger.init();
         await Physics.init();
+        Debugger.init();
 
         this.#buildElement();
 

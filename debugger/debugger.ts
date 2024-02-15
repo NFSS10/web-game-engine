@@ -1,6 +1,6 @@
 import { Scene } from "@src/scene";
 import { DebuggerWindowElement, DebuggerRendererStatsElement } from "./elements";
-import { FPSCounter } from "./lib";
+import { FPSCounter, PhysicsDrawer } from "./lib";
 
 const UI_UPDATE_INTERVAL_MS = 500;
 
@@ -14,13 +14,16 @@ abstract class Debugger {
 
     static #lastUpdateUITime: number;
     static #fpsCounter: FPSCounter;
+    static #physicsDrawer: PhysicsDrawer;
 
     static init(): void {
         this.#fpsCounter = new FPSCounter();
+        this.#physicsDrawer = new PhysicsDrawer();
 
         // register debugger components
         if (!customElements.get("debugger-window")) customElements.define("debugger-window", DebuggerWindowElement);
-        if (!customElements.get("debugger-renderer-stats")) customElements.define("debugger-renderer-stats", DebuggerRendererStatsElement);
+        if (!customElements.get("debugger-renderer-stats"))
+            customElements.define("debugger-renderer-stats", DebuggerRendererStatsElement);
     }
 
     static get enabled(): boolean {
@@ -43,7 +46,8 @@ abstract class Debugger {
 
     static setScene(scene: Scene): void {
         this.#scene = scene;
-        // TODO: Add debug drawer
+        this.#scene.world.physicsWorld.setDebugDrawer(this.#physicsDrawer.debugDrawer);
+        this.#scene.scene.add(this.#physicsDrawer.lineMesh);
     }
 
     static attachToElement(element: HTMLElement): void {
@@ -60,13 +64,15 @@ abstract class Debugger {
 
     static onPhysicsTick(): void {
         if (!this.#enabled) return;
-        console.log("Physics ticked");
+
+        this.#scene.world.physicsWorld.debugDrawWorld();
     }
 
     static onRender(): void {
         if (!this.#enabled) return;
 
         this.#fpsCounter.tick();
+        this.#physicsDrawer.draw();
 
         this.#updateUI();
     }
