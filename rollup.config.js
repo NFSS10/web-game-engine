@@ -1,5 +1,6 @@
 /* eslint-disable */
 import modify from "rollup-plugin-modify";
+import { string } from "rollup-plugin-string";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
 import replace from "@rollup/plugin-replace";
 import esbuild from "rollup-plugin-esbuild";
@@ -42,6 +43,7 @@ const terserOpts = {
 const esmStep = {
     input: input,
     plugins: [
+        string({ include: ["**/*.html", "**/*.css"] }),
         env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
@@ -60,6 +62,7 @@ const esmStep = {
 const cjsStep = {
     input: input,
     plugins: [
+        string({ include: ["**/*.html", "**/*.css"] }),
         env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
@@ -78,6 +81,7 @@ const cjsStep = {
 const bundleStep = {
     input: input,
     plugins: [
+        string({ include: ["**/*.html", "**/*.css"] }),
         env === "PROD" ? modify(removeDebuggerGetterModifyOpts) : undefined,
         env === "PROD" ? modify(removeDebuggerModifyOpts) : undefined,
         tsConfigPaths(),
