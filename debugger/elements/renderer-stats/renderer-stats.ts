@@ -2,7 +2,7 @@ import { type RendererInfo } from "@debugger/types";
 import html from "./template.html";
 import style from "./style.css";
 
-class DebuggerStatsElement extends HTMLElement {
+class DebuggerRendererStatsElement extends HTMLElement {
     #fpsValueElem: HTMLElement;
     #texturesValueElem: HTMLElement;
     #geometriesValueElem: HTMLElement;
@@ -46,4 +46,4 @@ class DebuggerStatsElement extends HTMLElement {
     }
 }
 
-export { DebuggerStatsElement };
+export { DebuggerRendererStatsElement };

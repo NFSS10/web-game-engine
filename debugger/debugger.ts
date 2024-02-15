@@ -16,11 +16,11 @@ abstract class Debugger {
     static #fpsCounter: FPSCounter;
 
     static init(): void {
+        this.#fpsCounter = new FPSCounter();
+
         // register debugger components
         if (!customElements.get("debugger-window")) customElements.define("debugger-window", DebuggerWindowElement);
         if (!customElements.get("debugger-stats")) customElements.define("debugger-stats", DebuggerStatsElement);
-
-        this.#fpsCounter = new FPSCounter();
     }
 
     static get enabled(): boolean {

@@ -1,4 +1,4 @@
 import { DebuggerWindowElement } from "./debugger-window/debugger-window";
-import { DebuggerStatsElement } from "./stats/stats";
+import { DebuggerRendererStatsElement } from "./renderer-stats/renderer-stats";
 
-export { DebuggerWindowElement, DebuggerStatsElement };
+export { DebuggerWindowElement, DebuggerRendererStatsElement };
