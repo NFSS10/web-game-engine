@@ -20,7 +20,7 @@ abstract class Debugger {
 
         // register debugger components
         if (!customElements.get("debugger-window")) customElements.define("debugger-window", DebuggerWindowElement);
-        if (!customElements.get("debugger-stats")) customElements.define("debugger-stats", DebuggerRendererStatsElement);
+        if (!customElements.get("debugger-renderer-stats")) customElements.define("debugger-renderer-stats", DebuggerRendererStatsElement);
     }
 
     static get enabled(): boolean {
