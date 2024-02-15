@@ -3,6 +3,7 @@ import { DebuggerWindowElement } from "./elements";
 
 abstract class Debugger {
     static #enabled = false;
+    static #element: HTMLElement;
     static #scene: Scene;
 
     static init(): void {
@@ -28,10 +29,10 @@ abstract class Debugger {
     }
 
     static attachToElement(element: HTMLElement): void {
-        //////// TODO: destroy previous debugger window
-        // attaches the debugger window to the game window
-        const debuggerWindow = new DebuggerWindowElement();
-        element.appendChild(debuggerWindow);
+        if (this.#element) this.#element.remove();
+
+        this.#element = new DebuggerWindowElement();
+        element.appendChild(this.#element);
     }
 
     static onPhysicsTick(): void {
