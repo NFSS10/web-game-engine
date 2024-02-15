@@ -1,5 +1,5 @@
 import { Scene } from "@src/scene";
-import { DebuggerWindowElement, DebuggerStatsElement } from "./elements";
+import { DebuggerWindowElement, DebuggerRendererStatsElement } from "./elements";
 import { FPSCounter } from "./lib";
 
 const UI_UPDATE_INTERVAL_MS = 500;
@@ -10,7 +10,7 @@ abstract class Debugger {
     static #scene: Scene;
 
     static #windowElem: DebuggerWindowElement;
-    static #statsElem: DebuggerStatsElement;
+    static #statsElem: DebuggerRendererStatsElement;
 
     static #lastUpdateUITime: number;
     static #fpsCounter: FPSCounter;
@@ -20,7 +20,7 @@ abstract class Debugger {
 
         // register debugger components
         if (!customElements.get("debugger-window")) customElements.define("debugger-window", DebuggerWindowElement);
-        if (!customElements.get("debugger-stats")) customElements.define("debugger-stats", DebuggerStatsElement);
+        if (!customElements.get("debugger-stats")) customElements.define("debugger-stats", DebuggerRendererStatsElement);
     }
 
     static get enabled(): boolean {
@@ -50,7 +50,7 @@ abstract class Debugger {
         if (this.#statsElem) this.#statsElem.remove();
         if (this.#windowElem) this.#windowElem.remove();
 
-        this.#statsElem = new DebuggerStatsElement();
+        this.#statsElem = new DebuggerRendererStatsElement();
         this.#windowElem = new DebuggerWindowElement();
         this.#windowElem.shadowRoot?.appendChild(this.#statsElem);
         this.#windowElem.style.display = this.#enabled ? "" : "none";
