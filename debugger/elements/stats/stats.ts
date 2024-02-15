@@ -1,3 +1,4 @@
+import { type RendererInfo } from "@debugger/types";
 import html from "./template.html";
 import style from "./style.css";
 
@@ -35,7 +36,7 @@ class DebuggerStatsElement extends HTMLElement {
         this.#fpsValueElem.innerText = fps.toString();
     }
 
-    updateInfo(info: any): void {
+    updateInfo(info: RendererInfo): void {
         this.#texturesValueElem.innerText = info.memory.textures.toString();
         this.#geometriesValueElem.innerText = info.memory.geometries.toString();
         this.#pointsValueElem.innerText = info.render.points.toString();

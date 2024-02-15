@@ -6,6 +6,7 @@ const UI_UPDATE_INTERVAL_MS = 500;
 
 abstract class Debugger {
     static #enabled = false;
+    static #renderer: THREE.WebGLRenderer;
     static #scene: Scene;
 
     static #windowElem: DebuggerWindowElement;
@@ -28,10 +29,16 @@ abstract class Debugger {
 
     static enable(): void {
         this.#enabled = true;
+        if (this.#windowElem) this.#windowElem.style.display = "";
     }
 
     static disable(): void {
         this.#enabled = false;
+        if (this.#windowElem) this.#windowElem.style.display = "none";
+    }
+
+    static setRenderer(renderer: THREE.WebGLRenderer): void {
+        this.#renderer = renderer;
     }
 
     static setScene(scene: Scene): void {
@@ -46,6 +53,7 @@ abstract class Debugger {
         this.#statsElem = new DebuggerStatsElement();
         this.#windowElem = new DebuggerWindowElement();
         this.#windowElem.shadowRoot?.appendChild(this.#statsElem);
+        this.#windowElem.style.display = this.#enabled ? "" : "none";
 
         element.appendChild(this.#windowElem);
     }
@@ -68,10 +76,13 @@ abstract class Debugger {
     // }
 
     static #updateUI(): void {
+        if (!this.#enabled) return;
+
         const now = Date.now();
         if (now - this.#lastUpdateUITime < UI_UPDATE_INTERVAL_MS) return;
 
         this.#statsElem?.updateFPS(this.#fpsCounter.fps);
+        this.#statsElem?.updateInfo(this.#renderer.info);
         this.#lastUpdateUITime = now;
     }
 }

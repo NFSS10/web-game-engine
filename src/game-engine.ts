@@ -31,6 +31,9 @@ class GameEngine {
         this.#camera = new Camera(45, width / height);
         this.#scene = new Scene("default");
         this.#renderer = new Renderer(this.#element, width, height);
+
+        Debugger.setRenderer(this.#renderer.renderer);
+        Debugger.setScene(this.#scene);
     }
 
     get canvas(): HTMLElement {
