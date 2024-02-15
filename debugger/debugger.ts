@@ -1,17 +1,25 @@
 import { Scene } from "@src/scene";
 import { DebuggerWindowElement, DebuggerStatsElement } from "./elements";
+import { FPSCounter } from "./lib";
+
+const UI_UPDATE_INTERVAL_MS = 500;
 
 abstract class Debugger {
     static #enabled = false;
     static #scene: Scene;
 
-    static #windowElem: HTMLElement;
-    static #statsElem: HTMLElement;
+    static #windowElem: DebuggerWindowElement;
+    static #statsElem: DebuggerStatsElement;
+
+    static #lastUpdateUITime: number;
+    static #fpsCounter: FPSCounter;
 
     static init(): void {
         // register debugger components
         if (!customElements.get("debugger-window")) customElements.define("debugger-window", DebuggerWindowElement);
         if (!customElements.get("debugger-stats")) customElements.define("debugger-stats", DebuggerStatsElement);
+
+        this.#fpsCounter = new FPSCounter();
     }
 
     static get enabled(): boolean {
@@ -49,12 +57,23 @@ abstract class Debugger {
 
     static onRender(): void {
         if (!this.#enabled) return;
-        console.log("Tick");
+
+        this.#fpsCounter.tick();
+
+        this.#updateUI();
     }
 
     // static #createDebugDrawer(): void {
     //     // TODO: Create debug drawer
     // }
+
+    static #updateUI(): void {
+        const now = Date.now();
+        if (now - this.#lastUpdateUITime < UI_UPDATE_INTERVAL_MS) return;
+
+        this.#statsElem?.updateFPS(this.#fpsCounter.fps);
+        this.#lastUpdateUITime = now;
+    }
 }
 
 export { Debugger };
