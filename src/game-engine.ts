@@ -22,6 +22,7 @@ class GameEngine {
         width = width ?? 768;
         height = height ?? 768;
 
+        Debugger.init();
         await Physics.init();
 
         this.#buildElement();
@@ -60,7 +61,12 @@ class GameEngine {
     }
 
     #buildElement(): void {
+        // creates the game window element
         this.#element = document.createElement("game-window");
+        this.#element.style.position = "relative";
+        this.#element.style.display = "inline-block";
+
+        Debugger.attachToElement(this.#element);
     }
 
     #loop(): void {
