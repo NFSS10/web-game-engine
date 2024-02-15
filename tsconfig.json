@@ -3,6 +3,7 @@
         "baseUrl": ".",
         "paths": {
             "@debugger": ["debugger"],
+            "@debugger/*": ["debugger/*"],
             "@modules": ["modules"],
             "@src/*": ["./src/*"]
         },
