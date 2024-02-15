@@ -1,0 +1,45 @@
+:host {
+    pointer-events: all;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    box-sizing: border-box;
+    width: 350px;
+    padding: 8px 8px 8px 8px;
+    font-size: 0px;
+    background-color: #262523;
+    opacity: 0.85;
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    margin: 0px 16px 0px 0px;
+}
+
+.column:last-child {
+    margin: 0px 0px 0px 0px;
+}
+
+.column > .block:first-child {
+    margin: 0px 0px 12px 0px;
+}
+
+.column > .block > .value {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.column > .block > .value.green {
+    color: #7dda87;
+}
+
+.column > .block > .value.red {
+    color: #fc4f70;
+}
+
+.column > .block > .label {
+    font-size: 8px;
+    font-weight: 400;
+    color: #8bd1e7;
+}
