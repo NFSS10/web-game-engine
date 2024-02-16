@@ -27,6 +27,10 @@ class Renderer {
         element.appendChild(this.#renderer.domElement);
     }
 
+    get renderer(): THREE.WebGLRenderer {
+        return this.#renderer;
+    }
+
     render(scene: Scene, camera: Camera): void {
         this.#renderer.render(scene.scene, camera.camera);
     }

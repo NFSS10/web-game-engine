@@ -20,8 +20,20 @@ class Scene {
         return this.#id;
     }
 
+    get entities(): Entity[] {
+        return this.#entities;
+    }
+
     get scene(): THREE.Scene {
         return this.#scene;
+    }
+
+    get world(): World {
+        return this.#world;
+    }
+
+    get timeScale(): number {
+        return this.#timeScale;
     }
 
     addEntity(entity: Entity): Scene {

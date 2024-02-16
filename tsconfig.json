@@ -2,6 +2,8 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
+            "@debugger": ["debugger"],
+            "@debugger/*": ["debugger/*"],
             "@modules": ["modules"],
             "@src/*": ["./src/*"]
         },
@@ -20,6 +22,6 @@
         "noImplicitReturns": true,
         "skipLibCheck": true
     },
-    "include": ["declarations.d.ts", "src/**/*", "modules/**/*", "types/**/*"],
+    "include": ["declarations.d.ts", "src/**/*", "modules/**/*", "types/**/*", "debugger/**/*"],
     "exclude": ["node_modules"]
 }
