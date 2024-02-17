@@ -42,6 +42,10 @@ class GameEngine {
         return this.#element;
     }
 
+    get loader(): AssetLoader {
+        return AssetLoader;
+    }
+
     get debugger(): Debugger {
         return Debugger;
     }
