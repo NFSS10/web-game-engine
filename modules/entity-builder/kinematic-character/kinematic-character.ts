@@ -23,6 +23,10 @@ class KinematicCharacterEntity extends Entity {
         this.#moveZ = 0;
     }
 
+    get isFalling(): boolean {
+        return this.#fallVelocity > 0;
+    }
+
     moveX(value: number): void {
         this.#moveX = value;
     }
