@@ -527,6 +527,18 @@ declare module "ammo" {
             set_m_collisionObject(m_collisionObject: btCollisionObject): void;
         }
 
+        export class ClosestRayResultCallback extends RayResultCallback {
+            constructor(from: btVector3, to: btVector3);
+            get_m_rayFromWorld(): btVector3;
+            set_m_rayFromWorld(m_rayFromWorld: btVector3): void;
+            get_m_rayToWorld(): btVector3;
+            set_m_rayToWorld(m_rayToWorld: btVector3): void;
+            get_m_hitNormalWorld(): btVector3;
+            set_m_hitNormalWorld(m_hitNormalWorld: btVector3): void;
+            get_m_hitPointWorld(): btVector3;
+            set_m_hitPointWorld(m_hitPointWorld: btVector3): void;
+        }
+
         export class btRigidBodyConstructionInfo {
             constructor(
                 mass: number,

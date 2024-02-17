@@ -3,7 +3,7 @@ import { type Ammo } from "ammo";
 
 import { ObjectUtils } from "@src/entity/utils";
 import { type Body, type BodyOptions } from "./types";
-import { BodySimulationState } from "./enums";
+import { BodySimulationState, BodyType, CollisionFlag } from "./enums";
 
 abstract class Physics {
     static #Ammo?: Ammo;
@@ -82,8 +82,17 @@ abstract class Physics {
     static #createBody(shape: Ammo.btCollisionShape, object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
 
-        const mass = options?.mass ?? 1;
+        let mass = options?.mass ?? 1;
         const friction = options?.friction ?? 1;
+        const bodyType = options?.type ?? BodyType.DYNAMIC;
+
+        if (bodyType === BodyType.KINEMATIC && mass != 0) {
+            console.warn("Kinematic bodies should have 0 mass. Setting mass to 0.");
+            mass = 0;
+        } else if (bodyType === BodyType.STATIC && mass != 0) {
+            console.warn("Static bodies should have 0 mass. Setting mass to 0.");
+            mass = 0;
+        }
 
         // calculates inertia
         const localInertia = new this.#Ammo.btVector3(0, 0, 0);
@@ -107,7 +116,17 @@ abstract class Physics {
 
         rigidBody.setFriction(friction);
 
-        rigidBody.setActivationState(BodySimulationState.ACTIVE);
+        // set collision flags
+        const collisionFlags =
+            bodyType === BodyType.KINEMATIC
+                ? rigidBody.getCollisionFlags() | CollisionFlag.CF_KINEMATIC_OBJECT
+                : rigidBody.getCollisionFlags();
+        rigidBody.setCollisionFlags(collisionFlags);
+
+        // set activation state
+        const activeState =
+            bodyType === BodyType.KINEMATIC ? BodySimulationState.ALWAYS_ACTIVE : BodySimulationState.ACTIVE;
+        rigidBody.setActivationState(activeState);
 
         return rigidBody;
     }
