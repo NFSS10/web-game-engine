@@ -9,12 +9,30 @@ import { BodyType } from "@src/physics/enums";
 class KinematicCharacterEntity extends Entity {
     #auxTransform: Ammo.btTransform;
     #fallVelocity: number;
+    #moveX: number;
+    #moveY: number;
+    #moveZ: number;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         super(object, options);
 
         this.#auxTransform = new Physics.Ammo.btTransform();
         this.#fallVelocity = 0;
+        this.#moveX = 0;
+        this.#moveY = 0;
+        this.#moveZ = 0;
+    }
+
+    moveX(value: number): void {
+        this.#moveX = value;
+    }
+
+    moveY(value: number): void {
+        this.#moveY = value;
+    }
+
+    moveZ(value: number): void {
+        this.#moveZ = value;
     }
 
     _createBody(options?: BodyOptions): void {
@@ -43,6 +61,11 @@ class KinematicCharacterEntity extends Entity {
 
             // simulate gravity manually
             this.#simulateFalling(dt, position);
+
+            // move the object based on the input
+            position.setX(position.x() + this.#moveX * dt);
+            position.setY(position.y() + this.#moveY * dt);
+            position.setZ(position.z() + this.#moveZ * dt);
 
             // updates the transform of the motion state
             this.#auxTransform.setOrigin(position);
