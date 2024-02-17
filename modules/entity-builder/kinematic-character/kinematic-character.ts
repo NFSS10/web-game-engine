@@ -6,12 +6,15 @@ import { Physics } from "@src/physics";
 import { type BodyOptions } from "@src/physics/types";
 import { BodyType } from "@src/physics/enums";
 
+// TODO: Handle collisions with static objects
+
 class KinematicCharacterEntity extends Entity {
     #auxTransform: Ammo.btTransform;
     #fallVelocity: number;
     #moveX: number;
     #moveY: number;
     #moveZ: number;
+    #jumpVelocity: number;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         super(object, options);
@@ -21,6 +24,7 @@ class KinematicCharacterEntity extends Entity {
         this.#moveX = 0;
         this.#moveY = 0;
         this.#moveZ = 0;
+        this.#jumpVelocity = 0;
     }
 
     get isFalling(): boolean {
@@ -37,6 +41,11 @@ class KinematicCharacterEntity extends Entity {
 
     moveZ(value: number): void {
         this.#moveZ = value;
+    }
+
+    jump(): void {
+        if (this.isFalling) return;
+        this.#jumpVelocity = 10; // Adjust this value to control the jump height
     }
 
     _createBody(options?: BodyOptions): void {
@@ -65,6 +74,9 @@ class KinematicCharacterEntity extends Entity {
 
             // simulate gravity manually
             this.#simulateFalling(dt, position);
+
+            // handles jumping
+            this.#tickJump(dt, position);
 
             // move the object based on the input
             position.setX(position.x() + this.#moveX * dt);
@@ -106,6 +118,14 @@ class KinematicCharacterEntity extends Entity {
         // move the object down by the fall distance
         const fallDistance = this.#fallVelocity * dt;
         position.setY(position.y() - fallDistance);
+    }
+
+    #tickJump(dt: number, position: Ammo.btVector3): void {
+        if (this.#jumpVelocity === 0) return;
+
+        position.setY(position.y() + this.#jumpVelocity * dt);
+        this.#jumpVelocity -= 9.82 * dt;
+        if (this.#jumpVelocity < 0) this.#jumpVelocity = 0;
     }
 }
 
