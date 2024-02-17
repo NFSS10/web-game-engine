@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Debugger } from "@debugger";
 import { Module } from "@modules";
 import { Camera } from "@src/camera";
-import { ModuleLoader, ModuleType } from "@src/loaders";
+import { AssetLoader, ModuleLoader, ModuleType } from "@src/loaders";
 import { Physics } from "@src/physics";
 import { Renderer } from "@src/renderer";
 import { Scene } from "@src/scene";
@@ -31,6 +31,8 @@ class GameEngine {
         this.#camera = new Camera(45, width / height);
         this.#scene = new Scene("default");
         this.#renderer = new Renderer(this.#element, width, height);
+
+        AssetLoader.init(this.#renderer.renderer);
 
         Debugger.setRenderer(this.#renderer.renderer);
         Debugger.setScene(this.#scene);
