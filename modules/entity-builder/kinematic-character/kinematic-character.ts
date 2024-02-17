@@ -17,6 +17,19 @@ class KinematicCharacterEntity extends Entity {
         this.#fallVelocity = 0;
     }
 
+    _createBody(options?: BodyOptions): void {
+        if (this.bodies.length > 0) return;
+
+        // TODO: Calculate size of the object and pass down to the function
+        // TODO: Change default body to a capsule
+        const body = Physics.createBoxBody(this.object, {
+            friction: options?.friction ?? 1,
+            mass: 0,
+            type: BodyType.KINEMATIC
+        });
+        this.bodies.push(body);
+    }
+
     tickBodies(dt: number): void {
         for (let i = 0; i < this.bodies.length; i++) {
             const body = this.bodies[i]!;
@@ -39,19 +52,6 @@ class KinematicCharacterEntity extends Entity {
             mesh.position.set(position.x(), position.y(), position.z());
             mesh.quaternion.set(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
         }
-    }
-
-    _createBody(options?: BodyOptions): void {
-        if (this.bodies.length > 0) return;
-
-        // TODO: Calculate size of the object and pass down to the function
-        // TODO: Change default body to a capsule
-        const body = Physics.createBoxBody(this.object, {
-            friction: options?.friction ?? 1,
-            mass: 0,
-            type: BodyType.KINEMATIC
-        });
-        this.bodies.push(body);
     }
 
     #simulateFalling(dt: number, position: Ammo.btVector3): void {
