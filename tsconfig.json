@@ -5,6 +5,7 @@
             "@debugger": ["debugger"],
             "@debugger/*": ["debugger/*"],
             "@modules": ["modules"],
+            "@modules/entity-builder/*": ["modules/entity-builder/*"],
             "@src/*": ["./src/*"]
         },
         "outDir": "./dist/esm",

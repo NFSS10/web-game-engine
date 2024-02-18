@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Example</title>
+        <title>Primitives example</title>
     </head>
 
     <body></body>
@@ -32,7 +32,7 @@
 
         // For more details on how the scene is created, check this file:
         // - ../modules/scene-builder/examples/primitives.ts
-        const scene = sceneBuilder.createExampleScene("primitives", entityBuilder);
+        const scene = await sceneBuilder.createExampleScene("primitives", entityBuilder);
         gameEngine.setScene(scene);
 
         gameEngine.start();

@@ -32,7 +32,7 @@
 
         // For more details on how the scene is created, check this file:
         // - ../modules/scene-builder/examples/car.ts
-        const scene = sceneBuilder.createExampleScene("car", entityBuilder);
+        const scene = await sceneBuilder.createExampleScene("car", entityBuilder);
         gameEngine.setScene(scene);
 
         gameEngine.start();

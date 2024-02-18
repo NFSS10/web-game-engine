@@ -31,78 +31,11 @@
             gameEngine.loadModule("entity-builder")
         ]);
 
-        // creates a new scene
-        const scene = sceneBuilder.createScene();
-
-        // creates a static floor
-        const floor = entityBuilder.createPrimitive("cube", { id: "floor" });
-        floor.object.scale.set(50, 0.1, 50); // scales the floor
-        floor.object.position.set(0, -3, 0); // positions the floor
-        floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-        scene.addEntity(floor);
-
-        const characterMesh = await gameEngine.loader.loadFBX(
-            "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/models/y-bot.fbx"
-        );
-        characterMesh.scale.set(0.015, 0.015, 0.015);
-
-        // change character mesh origin
-        const characterNode = new THREE.Object3D();
-        characterNode.add(characterMesh);
-        characterMesh.position.set(0, -1.35, 0);
-
-        const character = entityBuilder.createKinematicCharacter(characterNode, { id: "character" });
-        character.enablePhysics({ size: { x: 0.75, y: 2.7, z: 0.75 } });
-        scene.addEntity(character);
-
-        // load animations
-        const promises = [
-            gameEngine.loader.loadFBX(
-                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/warrior-idle.fbx"
-            ),
-            gameEngine.loader.loadFBX(
-                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/joyful-jump.fbx"
-            ),
-            gameEngine.loader.loadFBX(
-                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/walking.fbx"
-            )
-        ];
-        const [idleAnim, jumpAnim, walkingAnim] = await Promise.all(promises);
-
-        // add animations to the character
-        character.Animator.addAnimation(idleAnim.animations[0], "idle");
-        character.Animator.addAnimation(jumpAnim.animations[0], "jump");
-        character.Animator.addAnimation(walkingAnim.animations[0], "walking");
-
-        // play idle animation
-        character.Animator.play("idle");
-
-        // sets the new scene
+        // For more details on how the scene is created, check this file:
+        // - ../modules/scene-builder/examples/character.ts
+        const scene = await sceneBuilder.createExampleScene("character", entityBuilder);
         gameEngine.setScene(scene);
 
-        // starts the game loop
         gameEngine.start();
-
-        // example of basic character controls
-        const keys = { w: false, a: false, s: false, d: false, space: false };
-        const control = () => {
-            if (keys.w) character.moveZ(2.5);
-            if (keys.s) character.moveZ(-2.5);
-            if (keys.a) character.moveX(2.5);
-            if (keys.d) character.moveX(-2.5);
-            if (keys.space) character.jump();
-            if (!keys.w && !keys.s && !keys.a && !keys.d) character.stop();
-        };
-
-        window.addEventListener("keydown", function (event) {
-            if (event.key in keys) keys[event.key] = true;
-            if (event.key === " ") keys.space = true;
-            control();
-        });
-        window.addEventListener("keyup", function (event) {
-            if (event.key in keys) keys[event.key] = false;
-            if (event.key === " ") keys.space = false;
-            control();
-        });
     </script>
 </html>
