@@ -22,17 +22,24 @@ class GameEngine {
         width = width ?? 768;
         height = height ?? 768;
 
+        // initialize the physics engine
         await Physics.init();
+
+        // initialize the debugger
         Debugger.init();
 
+        // create the game window element
         this.#buildElement();
 
+        // initialize the rest of the game engine
         this.#clock = new THREE.Clock();
         this.#camera = new Camera(45, width / height);
         this.#scene = new Scene("default");
         this.#renderer = new Renderer(this.#element, width, height);
 
+        // initialize the loaders
         AssetLoader.init(this.#renderer.renderer);
+        ModuleLoader.init(this);
 
         Debugger.setRenderer(this.#renderer.renderer);
         Debugger.setScene(this.#scene);

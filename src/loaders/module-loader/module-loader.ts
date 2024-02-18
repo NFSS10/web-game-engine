@@ -1,11 +1,18 @@
 import { Module, EntityBuilder, SceneBuilder } from "@modules";
+import GameEngine from "@src/game-engine";
 import { ModuleType } from "./enums";
 
 abstract class ModuleLoader {
     static SUPPORTED_MODULES = Object.values(ModuleType);
 
+    static #gameEngine: GameEngine;
+
     static #sceneBuilder?: SceneBuilder;
     static #entityBuilder?: EntityBuilder;
+
+    static init(engine: GameEngine): void {
+        this.#gameEngine = engine;
+    }
 
     static async loadModule(module: ModuleType): Promise<Module> {
         const isValid = this.SUPPORTED_MODULES.includes(module);
@@ -25,7 +32,7 @@ abstract class ModuleLoader {
         if (this.#sceneBuilder) return this.#sceneBuilder;
 
         const module = await import("../../../modules/scene-builder");
-        this.#sceneBuilder = new module.SceneBuilder();
+        this.#sceneBuilder = new module.SceneBuilder(this.#gameEngine);
         return this.#sceneBuilder;
     }
 
@@ -33,7 +40,7 @@ abstract class ModuleLoader {
         if (this.#entityBuilder) return this.#entityBuilder;
 
         const module = await import("../../../modules/entity-builder");
-        this.#entityBuilder = new module.EntityBuilder();
+        this.#entityBuilder = new module.EntityBuilder(this.#gameEngine);
         return this.#entityBuilder;
     }
 }
