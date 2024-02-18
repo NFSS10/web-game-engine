@@ -12,6 +12,10 @@ class Animator {
         animations.forEach(clip => this.addAnimation(clip));
     }
 
+    get animations(): string[] {
+        return Object.keys(this.#animations);
+    }
+
     tick(delta: number): void {
         this.#mixer.update(delta);
     }
@@ -31,7 +35,7 @@ class Animator {
         delete this.#animations[name];
     }
 
-    playAnimation(name: string): void {
+    play(name: string): void {
         const clip = this.#getClip(name);
         if (!clip) return;
 
@@ -39,7 +43,7 @@ class Animator {
         action.play();
     }
 
-    stopAnimation(name: string): void {
+    stop(name: string): void {
         const clip = this.#getClip(name);
         if (!clip) return;
 
@@ -47,7 +51,7 @@ class Animator {
         action.stop();
     }
 
-    pauseAnimation(name: string): void {
+    pause(name: string): void {
         const clip = this.#getClip(name);
         if (!clip) return;
 
@@ -55,7 +59,7 @@ class Animator {
         action.paused = true;
     }
 
-    resumeAnimation(name: string): void {
+    resume(name: string): void {
         const clip = this.#getClip(name);
         if (!clip) return;
 

@@ -77,7 +77,7 @@
         character.Animator.addAnimation(walkingAnim.animations[0], "walking");
 
         // play idle animation
-        character.Animator.playAnimation("idle");
+        character.Animator.play("idle");
 
         // sets the new scene
         gameEngine.setScene(scene);
@@ -93,10 +93,7 @@
             if (keys.a) character.moveX(2.5);
             if (keys.d) character.moveX(-2.5);
             if (keys.space) character.jump();
-            if (!keys.w && !keys.s && !keys.a && !keys.d) {
-                character.moveX(0);
-                character.moveZ(0);
-            }
+            if (!keys.w && !keys.s && !keys.a && !keys.d) character.stop();
         };
 
         window.addEventListener("keydown", function (event) {
