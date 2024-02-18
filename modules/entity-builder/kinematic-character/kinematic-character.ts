@@ -93,7 +93,7 @@ class KinematicCharacterEntity extends Entity {
     }
 
     #simulateFalling(dt: number, position: Ammo.btVector3): void {
-        const sizeY = 1; // TODO: don't use hardcoded values
+        const sizeY = this.size.y / 2;
 
         // raycast directly down from the object's position to check if there is a surface below it
         // the 0.0025 is a small error margin to ensure the raycast doesn't miss the surface
