@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Example</title>
+        <title>Primitives example</title>
     </head>
 
     <body></body>
@@ -30,32 +30,11 @@
             gameEngine.loadModule("entity-builder")
         ]);
 
-        // creates a new scene
-        const scene = sceneBuilder.createScene();
-
-        // creates a static floor
-        const floor = entityBuilder.createPrimitive("cube", { id: "floor" });
-        floor.object.scale.set(50, 0.1, 50);
-        floor.object.position.set(0, -3, 0);
-        floor.enablePhysics({ mass: 0 });
-        scene.addEntity(floor);
-
-        // creates random primitives
-        const primitives = ["cube", "capsule", "cone", "cylinder", "sphere"];
-        for (let i = 0; i < 50; i++) {
-            const randomIdx = Math.floor(Math.random() * primitives.length);
-            const primitive = primitives[randomIdx];
-
-            const entity = entityBuilder.createPrimitive(primitive, { id: `primitive-${i}` });
-            entity.object.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 10 - 5);
-            entity.enablePhysics();
-            scene.addEntity(entity);
-        }
-
-        // sets the new scene
+        // For more details on how the scene is created, check this file:
+        // - ../modules/scene-builder/examples/primitives.ts
+        const scene = await sceneBuilder.createExampleScene("primitives", entityBuilder);
         gameEngine.setScene(scene);
 
-        // starts the game loop
         gameEngine.start();
     </script>
 </html>

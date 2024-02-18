@@ -33,25 +33,11 @@
             gameEngine.loadModule("entity-builder")
         ]);
 
-        // creates a new scene
-        const scene = sceneBuilder.createScene();
-
-        // creates a static floor
-        const floor = entityBuilder.createPrimitive("cube", { id: "floor" });
-        floor.object.scale.set(50, 0.1, 50); // scales the floor
-        floor.object.position.set(0, -3, 0); // positions the floor
-        floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-        scene.addEntity(floor);
-
-        // creates random boxes
-        for (let i = 0; i < 30; i++) {
-            const box = entityBuilder.createPrimitive("cube", { id: `box-${i}` });
-            box.object.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 10 - 5);
-            box.enablePhysics();
-            scene.addEntity(box);
-        }
-
+        // For more details on how the scene is created, check this file:
+        // - ../modules/scene-builder/examples/debugger.ts
+        const scene = await sceneBuilder.createExampleScene("debugger", entityBuilder);
         gameEngine.setScene(scene);
+
         gameEngine.start();
     </script>
 </html>

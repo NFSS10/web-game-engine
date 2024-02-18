@@ -1,5 +1,5 @@
 import { Module } from "@modules";
-import { Entity } from "@src/entity";
+import { type Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Car } from "./raycast-vehicle";
 import { Character, TestCharacter } from "./kinematic-character";
@@ -36,15 +36,15 @@ class EntityBuilder extends Module {
         }
     }
 
-    createRaycastVehicle(options?: EntityOptions): Entity {
+    createRaycastVehicle(options?: EntityOptions): Car {
         return new Car(options);
     }
 
-    createTestCharacter(options?: EntityOptions): Entity {
+    createTestCharacter(options?: EntityOptions): TestCharacter {
         return new TestCharacter(options);
     }
 
-    createKinematicCharacter(mesh: THREE.Object3D, options?: EntityOptions): Entity {
+    createKinematicCharacter(mesh: THREE.Object3D, options?: EntityOptions): Character {
         return new Character(mesh, options);
     }
 }

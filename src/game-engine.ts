@@ -29,7 +29,7 @@ class GameEngine {
 
         this.#clock = new THREE.Clock();
         this.#camera = new Camera(45, width / height);
-        this.#scene = new Scene("default");
+        this.#scene = new Scene();
         this.#renderer = new Renderer(this.#element, width, height);
 
         AssetLoader.init(this.#renderer.renderer);
