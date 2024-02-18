@@ -6,11 +6,10 @@ import { Character, TestCharacter } from "./kinematic-character";
 import { Capsule, Cone, Cube, Cylinder, Sphere } from "./primitives";
 import { PrimitiveType } from "./primitives/enums";
 import { type EntityBuilderOptions } from "./types";
-import GameEngine from "@src/game-engine";
 
 class EntityBuilder extends Module {
-    constructor(engine: GameEngine) {
-        super(engine);
+    constructor() {
+        super();
     }
 
     get supportedPrimitives(): string[] {

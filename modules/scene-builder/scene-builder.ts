@@ -1,10 +1,9 @@
 import { Module } from "@modules";
-import GameEngine from "@src/game-engine";
 import { Scene } from "@src/scene";
 
 class SceneBuilder extends Module {
-    constructor(engine: GameEngine) {
-        super(engine);
+    constructor() {
+        super();
     }
 
     createScene(id: string): Scene {
