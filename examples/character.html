@@ -41,8 +41,6 @@
         floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
         scene.addEntity(floor);
 
-        gameEngine.debugger.enable();
-
         const characterMesh = await gameEngine.loader.loadFBX(
             "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/models/y-bot.fbx"
         );
