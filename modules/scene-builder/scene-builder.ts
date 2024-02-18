@@ -1,7 +1,8 @@
 import { EntityBuilder, Module } from "@modules";
 import { Scene } from "@src/scene";
-import { AssetLoader } from "@src/loaders";
 import { type SceneBuilderOptions } from "./types";
+import { buildCarScene } from "./examples";
+import { Example } from "./examples/enums";
 
 class SceneBuilder extends Module {
     constructor() {
@@ -9,25 +10,22 @@ class SceneBuilder extends Module {
     }
 
     createEmptyScene(options?: SceneBuilderOptions): Scene {
-        const id = options?.id ?? "default";
-
-        const scene = new Scene(id);
+        const scene = new Scene(options?.id);
         return scene;
     }
 
-    createExampleScene(entityBuilder: EntityBuilder, options?: SceneBuilderOptions): Scene {
-        const id = options?.id ?? "default";
-
-        const scene = new Scene(id);
-
-        // creates a static floor
-        const floor = entityBuilder.createPrimitive("cube", { id: "floor" });
-        floor.object.scale.set(50, 0.1, 50); // scales the floor
-        floor.object.position.set(0, -3, 0); // positions the floor
-        floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-        scene.addEntity(floor);
-
-        return scene;
+    createExampleScene(example: Example, entityBuilder: EntityBuilder, options?: SceneBuilderOptions): Scene {
+        const scene = new Scene(options?.id);
+        switch (example) {
+            case Example.Primitives:
+                return buildCarScene(scene, entityBuilder);
+            case Example.Debugger:
+            case Example.Car:
+            case Example.TestCharacter:
+            case Example.Character:
+            default:
+                throw new Error(`Unsupported example scene: ${example}`);
+        }
     }
 }
 
