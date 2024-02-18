@@ -1,7 +1,7 @@
 import { EntityBuilder, Module } from "@modules";
 import { Scene } from "@src/scene";
 import { type SceneBuilderOptions } from "./types";
-import { buildCarScene } from "./examples";
+import { buildCarScene, buildPrimitivesScene } from "./examples";
 import { Example } from "./examples/enums";
 
 class SceneBuilder extends Module {
@@ -18,7 +18,7 @@ class SceneBuilder extends Module {
         const scene = new Scene(options?.id);
         switch (example) {
             case Example.Primitives:
-                return scene;
+                return buildPrimitivesScene(scene, entityBuilder);
             case Example.Debugger:
                 return scene;
             case Example.Car:
