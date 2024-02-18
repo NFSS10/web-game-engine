@@ -1,4 +1,4 @@
-import { EntityBuilder, Module } from "@modules";
+import { type EntityBuilder, Module } from "@modules";
 import { Scene } from "@src/scene";
 import { type SceneBuilderOptions } from "./types";
 import {

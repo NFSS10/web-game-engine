@@ -1,7 +1,6 @@
-import { EntityBuilder } from "@modules";
+import { type EntityBuilder } from "@modules";
 import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
-import { Car } from "@modules/entity-builder/raycast-vehicle";
-import { Scene } from "@src/scene";
+import { type Scene } from "@src/scene";
 
 const buildCarScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
     // creates a static floor
@@ -12,7 +11,7 @@ const buildCarScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
     scene.addEntity(floor);
 
     // creates a car entity
-    const car = entityBuilder.createRaycastVehicle({ id: "car" }) as Car;
+    const car = entityBuilder.createRaycastVehicle({ id: "car" });
     car.object.position.set(0, -1.25, 0); // positions the car on top of the floor
     car.enablePhysics();
     scene.addEntity(car);

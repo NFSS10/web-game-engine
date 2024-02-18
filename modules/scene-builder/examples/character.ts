@@ -1,10 +1,9 @@
 import * as THREE from "three";
 
-import { EntityBuilder } from "@modules";
+import { type EntityBuilder } from "@modules";
 import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
-import { Character } from "@modules/entity-builder/kinematic-character";
 import { AssetLoader } from "@src/loaders";
-import { Scene } from "@src/scene";
+import { type Scene } from "@src/scene";
 
 const buildCharacterScene = async (scene: Scene, entityBuilder: EntityBuilder): Promise<Scene> => {
     // creates a static floor
@@ -24,7 +23,7 @@ const buildCharacterScene = async (scene: Scene, entityBuilder: EntityBuilder): 
     characterNode.add(characterMesh);
     characterMesh.position.set(0, -1.35, 0);
 
-    const character = entityBuilder.createKinematicCharacter(characterNode, { id: "character" }) as Character;
+    const character = entityBuilder.createKinematicCharacter(characterNode, { id: "character" });
     character.enablePhysics({ size: { x: 0.75, y: 2.7, z: 0.75 } });
     scene.addEntity(character);
 

@@ -1,6 +1,6 @@
-import { EntityBuilder } from "@modules";
+import { type EntityBuilder } from "@modules";
 import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
-import { Scene } from "@src/scene";
+import { type Scene } from "@src/scene";
 
 const buildDebuggerScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
     // creates a static floor

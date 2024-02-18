@@ -1,7 +1,6 @@
-import { EntityBuilder } from "@modules";
-import { TestCharacter } from "@modules/entity-builder/kinematic-character";
+import { type EntityBuilder } from "@modules";
 import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
-import { Scene } from "@src/scene";
+import { type Scene } from "@src/scene";
 
 const buildTestCharacterScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
     // creates a static floor
@@ -20,7 +19,7 @@ const buildTestCharacterScene = (scene: Scene, entityBuilder: EntityBuilder): Sc
     }
 
     // creates a kinematic character
-    const character = entityBuilder.createTestCharacter({ id: "character" }) as TestCharacter;
+    const character = entityBuilder.createTestCharacter({ id: "character" });
     character.enablePhysics();
     scene.addEntity(character);
 
