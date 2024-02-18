@@ -1,9 +1,8 @@
 import { type Ammo } from "ammo";
 
 import { Entity } from "@src/entity";
-import { type EntityOptions } from "@src/entity/types";
+import { type CreateBodyOptions, type EntityOptions } from "@src/entity/types";
 import { Physics } from "@src/physics";
-import { type BodyOptions } from "@src/physics/types";
 import { BodyType } from "@src/physics/enums";
 
 // TODO: Handle collisions with static objects
@@ -48,13 +47,13 @@ class KinematicCharacterEntity extends Entity {
         this.#jumpVelocity = 10; // Adjust this value to control the jump height
     }
 
-    _createBody(options?: BodyOptions): void {
+    _createBody(options?: CreateBodyOptions): void {
         if (this.bodies.length > 0) return;
 
-        // TODO: Calculate size of the object and pass down to the function
         // TODO: Change default body to a capsule
-        const body = Physics.createBoxBody(this.object, {
-            friction: options?.friction ?? 1,
+        const size = options?.size ?? this.size;
+        const body = Physics.createBoxBody(size, this.object, {
+            ...options,
             mass: 0,
             type: BodyType.KINEMATIC
         });
@@ -94,7 +93,7 @@ class KinematicCharacterEntity extends Entity {
     }
 
     #simulateFalling(dt: number, position: Ammo.btVector3): void {
-        const sizeY = 1; // TODO: don't use hardcoded values
+        const sizeY = this.size.y / 2;
 
         // raycast directly down from the object's position to check if there is a surface below it
         // the 0.0025 is a small error margin to ensure the raycast doesn't miss the surface

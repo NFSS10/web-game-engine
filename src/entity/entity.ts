@@ -1,15 +1,18 @@
 import * as THREE from "three";
 
+import { type Size } from "@src/types";
 import { Physics, World } from "@src/physics";
-import { type Body, type BodyOptions } from "@src/physics/types";
+import { type Body } from "@src/physics/types";
 import { Scene } from "@src/scene";
 import { Utils } from "@src/utils";
-import { type EntityOptions } from "./types";
+import { type CreateBodyOptions, type EntityOptions } from "./types";
+import { ObjectUtils } from "./utils";
 
 class Entity {
     #id: string;
     #object: THREE.Object3D;
     #bodies: Body[];
+    #size: Size;
     #isPhysicsEnabled: boolean;
 
     sceneRef?: Scene;
@@ -19,6 +22,7 @@ class Entity {
         this.#object = object;
         this.#bodies = [];
         this.#isPhysicsEnabled = false;
+        this.#size = { x: -1, y: -1, z: -1 };
     }
 
     get id(): string {
@@ -33,14 +37,22 @@ class Entity {
         return this.#bodies;
     }
 
+    get size(): Size {
+        return this.#size;
+    }
+
     get isPhysicsEnabled(): boolean {
         return this.#isPhysicsEnabled;
     }
 
-    enablePhysics(bodyOptions?: BodyOptions): Entity {
+    enablePhysics(options?: CreateBodyOptions): Entity {
         // the default behavior is to create a box body around the object
         // if no bodies were yet created for this entity
-        if (this.#bodies.length === 0) this._createBody(bodyOptions);
+        if (this.#bodies.length === 0) {
+            const size = options?.size ?? ObjectUtils.getBoundingBoxSize(this.object);
+            this.#size = size;
+            this._createBody(options);
+        }
 
         // if the entity is already in a scene, register it in the physics world
         if (this.sceneRef) this.sceneRef.addEntityToWorld(this);
@@ -79,11 +91,11 @@ class Entity {
         throw new Error("Method not implemented");
     }
 
-    _createBody(options?: BodyOptions): void {
+    _createBody(options?: CreateBodyOptions): void {
         if (this.bodies.length > 0) return;
 
-        console.info(`Generating default body for entity: "${this.#id}"`);
-        const body = Physics.createBoxBody(this.#object, options);
+        const size = options?.size ?? this.#size;
+        const body = Physics.createBoxBody(size, this.#object, options);
         this.#bodies.push(body);
     }
 

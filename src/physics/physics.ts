@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { type Ammo } from "ammo";
 
-import { ObjectUtils } from "@src/entity/utils";
+import { type Size } from "@src/types";
 import { type Body, type BodyOptions } from "./types";
 import { BodySimulationState, BodyType, CollisionFlag } from "./enums";
 
@@ -40,10 +40,8 @@ abstract class Physics {
         return physicsWorld;
     }
 
-    static createBoxBody(object: THREE.Object3D, options?: BodyOptions): Body {
+    static createBoxBody(size: Size, object: THREE.Object3D, options?: BodyOptions): Body {
         if (!this.#Ammo) throw new Error("Physics engine not loaded");
-
-        const size = ObjectUtils.getBoundingBoxSize(object);
 
         const halfExtents = new this.#Ammo.btVector3(size.x * 0.5, size.y * 0.5, size.z * 0.5);
         const shape = new this.#Ammo.btBoxShape(halfExtents);
@@ -104,9 +102,11 @@ abstract class Physics {
         object.getWorldPosition(worldPos);
         object.getWorldQuaternion(worldQuat);
 
+        const origin = options?.origin ?? worldPos;
+
         const transform = new this.#Ammo.btTransform();
         transform.setIdentity();
-        transform.setOrigin(new this.#Ammo.btVector3(worldPos.x, worldPos.y, worldPos.z));
+        transform.setOrigin(new this.#Ammo.btVector3(origin.x, origin.y, origin.z));
         transform.setRotation(new this.#Ammo.btQuaternion(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w));
         const motionState = new this.#Ammo.btDefaultMotionState(transform);
 

@@ -2,10 +2,9 @@ import * as THREE from "three";
 import { type Ammo } from "ammo";
 
 import { Entity } from "@src/entity";
-import { type EntityOptions } from "@src/entity/types";
+import { type EntityOptions, type CreateBodyOptions } from "@src/entity/types";
 import { Physics, World } from "@src/physics";
 import { BodySimulationState } from "@src/physics/enums";
-import { type BodyOptions } from "@src/physics/types";
 import { ObjectUtils } from "@src/entity/utils";
 import { type WheelData, type WheelOptions } from "./types";
 import { WheelIndex, SteeringState, MovementState } from "./enums";
@@ -120,9 +119,12 @@ class RaycastVehicleEntity extends Entity {
         this.#wheelStates[wheel].steeringState = state;
     }
 
-    _createBody(bodyOptions?: BodyOptions): void {
+    _createBody(bodyOptions?: CreateBodyOptions): void {
         if (this.bodies.length > 0) return;
-        this.#chassisBody = Physics.createBoxBody(this.#chassisMesh, {
+
+        const size = bodyOptions?.size ?? ObjectUtils.getBoundingBoxSize(this.#chassisMesh);
+
+        this.#chassisBody = Physics.createBoxBody(size, this.#chassisMesh, {
             mass: bodyOptions?.mass ?? 1500,
             friction: bodyOptions?.friction ?? 1
         });

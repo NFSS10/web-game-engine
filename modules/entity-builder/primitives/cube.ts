@@ -1,8 +1,7 @@
 import * as THREE from "three";
 
-import { type EntityOptions } from "@src/entity/types";
+import { type EntityOptions, type CreateBodyOptions } from "@src/entity/types";
 import { Physics } from "@src/physics";
-import { type BodyOptions } from "@src/physics/types";
 import { PrimitiveEntity } from "./base";
 
 class Cube extends PrimitiveEntity {
@@ -11,9 +10,9 @@ class Cube extends PrimitiveEntity {
         super(object, options);
     }
 
-    _createBody(options?: BodyOptions): void {
+    _createBody(options?: CreateBodyOptions): void {
         if (this.bodies.length > 0) return;
-        const body = Physics.createBoxBody(this.object, options);
+        const body = Physics.createBoxBody(this.size, this.object, options);
         this.bodies.push(body);
     }
 }
