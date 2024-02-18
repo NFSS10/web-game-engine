@@ -82,7 +82,7 @@ class GameEngine {
         if (!this.#running) return;
 
         const dt = this.#clock.getDelta();
-        this.#scene.tickPhysics(dt);
+        this.#scene.tick(dt);
         Debugger.onPhysicsTick();
 
         this.#renderer.render(this.#scene, this.#camera);

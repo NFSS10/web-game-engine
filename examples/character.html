@@ -44,7 +44,7 @@
         gameEngine.debugger.enable();
 
         const characterMesh = await gameEngine.loader.loadFBX(
-            "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/y-bot.fbx"
+            "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/models/y-bot.fbx"
         );
         characterMesh.scale.set(0.015, 0.015, 0.015);
 
@@ -56,6 +56,32 @@
         const character = entityBuilder.createKinematicCharacter(characterNode, { id: "character" });
         character.enablePhysics({ size: { x: 0.75, y: 2.7, z: 0.75 } });
         scene.addEntity(character);
+
+        // load animations
+        const promises = [
+            gameEngine.loader.loadFBX(
+                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/warrior-idle.fbx"
+            ),
+            gameEngine.loader.loadFBX(
+                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/joyful-jump.fbx"
+            ),
+            gameEngine.loader.loadFBX(
+                "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/animations/walking.fbx"
+            )
+        ];
+        const [idleAnim, jumpAnim, walkingAnim] = await Promise.all(promises);
+
+        // manually name the animations for convenience
+        idleAnim.animations[0].name = "idle";
+        jumpAnim.animations[0].name = "jump";
+        walkingAnim.animations[0].name = "walking";
+
+        // add animations to the character
+        const animations = [...idleAnim.animations, ...jumpAnim.animations, ...walkingAnim.animations];
+        character.addAnimations(animations);
+
+        // play idle animation
+        character.playAnimation("walking");
 
         // sets the new scene
         gameEngine.setScene(scene);

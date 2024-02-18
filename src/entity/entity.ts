@@ -11,18 +11,22 @@ import { ObjectUtils } from "./utils";
 class Entity {
     #id: string;
     #object: THREE.Object3D;
-    #bodies: Body[];
+    #animations: THREE.AnimationClip[];
     #size: Size;
+    #bodies: Body[];
     #isPhysicsEnabled: boolean;
+    #animationMixer: THREE.AnimationMixer;
 
     sceneRef?: Scene;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         this.#id = options?.id ?? Utils.generateUUID();
         this.#object = object;
+        this.#animations = object.animations ?? [];
+        this.#size = { x: -1, y: -1, z: -1 };
         this.#bodies = [];
         this.#isPhysicsEnabled = false;
-        this.#size = { x: -1, y: -1, z: -1 };
+        this.#animationMixer = new THREE.AnimationMixer(this.#object);
     }
 
     get id(): string {
@@ -43,6 +47,10 @@ class Entity {
 
     get isPhysicsEnabled(): boolean {
         return this.#isPhysicsEnabled;
+    }
+
+    get animationMixer(): THREE.AnimationMixer {
+        return this.#animationMixer;
     }
 
     enablePhysics(options?: CreateBodyOptions): Entity {
@@ -69,6 +77,38 @@ class Entity {
         return this;
     }
 
+    addAnimations(animations: THREE.AnimationClip[]): Entity {
+        // only add animation if it's not already in the list
+        const existingAnimations = this.#animations.map(clip => clip.name);
+        animations.forEach(clip => {
+            if (existingAnimations.includes(clip.name)) {
+                console.warn(`Animation ${clip.name} already exists, skipping...`);
+                return;
+            }
+
+            this.#animations.push(clip);
+            existingAnimations.push(clip.name);
+        });
+
+        return this;
+    }
+
+    removeAnimations(names: string[]): Entity {
+        this.#animations = this.#animations.filter(clip => !names.includes(clip.name));
+        return this;
+    }
+
+    playAnimation(name: string): void {
+        const clip = this.#animations.find(clip => clip.name === name);
+        if (!clip) {
+            console.warn(`Animation ${name} not found`);
+            return;
+        }
+
+        const action = this.#animationMixer.clipAction(clip);
+        action.play();
+    }
+
     destroy(): void {
         // remove references before destroying
         if (this.sceneRef) {
@@ -84,6 +124,11 @@ class Entity {
 
         // @ts-expect-error Ensure this is destroyed
         this.#id = null;
+    }
+
+    tick(dt: number): void {
+        // update animations
+        this.#animationMixer.update(dt);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
