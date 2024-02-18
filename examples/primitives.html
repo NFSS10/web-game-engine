@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Example</title>
+    </head>
+
+    <body></body>
+
+    <style>
+        html {
+            background-color: #161616;
+        }
+    </style>
+
+    <script type="module">
+        import { GameEngine } from "http://localhost:8080/game-engine.js";
+
+        const gameEngine = new GameEngine();
+        console.info("Version:", gameEngine.VERSION);
+
+        // initializes the game engine
+        await gameEngine.init();
+
+        // adds the canvas to the page
+        document.body.appendChild(gameEngine.canvas);
+
+        // loads builder modules
+        const [sceneBuilder, entityBuilder] = await Promise.all([
+            gameEngine.loadModule("scene-builder"),
+            gameEngine.loadModule("entity-builder")
+        ]);
+
+        // creates a new scene
+        const scene = sceneBuilder.createScene();
+
+        // creates a static floor
+        const floor = entityBuilder.createPrimitive("cube", { id: "floor" });
+        floor.object.scale.set(50, 0.1, 50);
+        floor.object.position.set(0, -3, 0);
+        floor.enablePhysics({ mass: 0 });
+        scene.addEntity(floor);
+
+        // creates random primitives
+        const primitives = ["cube", "capsule", "cone", "cylinder", "sphere"];
+        for (let i = 0; i < 50; i++) {
+            const randomIdx = Math.floor(Math.random() * primitives.length);
+            const primitive = primitives[randomIdx];
+
+            const entity = entityBuilder.createPrimitive(primitive, { id: `primitive-${i}` });
+            entity.object.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 10 - 5);
+            entity.enablePhysics();
+            scene.addEntity(entity);
+        }
+
+        // sets the new scene
+        gameEngine.setScene(scene);
+
+        // starts the game loop
+        gameEngine.start();
+    </script>
+</html>
