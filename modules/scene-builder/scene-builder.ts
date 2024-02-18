@@ -18,11 +18,15 @@ class SceneBuilder extends Module {
         const scene = new Scene(options?.id);
         switch (example) {
             case Example.Primitives:
-                return buildCarScene(scene, entityBuilder);
+                return scene;
             case Example.Debugger:
+                return scene;
             case Example.Car:
+                return buildCarScene(scene, entityBuilder);
             case Example.TestCharacter:
+                return scene;
             case Example.Character:
+                return scene;
             default:
                 throw new Error(`Unsupported example scene: ${example}`);
         }
