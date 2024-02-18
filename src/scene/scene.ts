@@ -69,9 +69,17 @@ class Scene {
         this.#world.removeEntity(entity);
     }
 
-    tickPhysics(dt: number): void {
+    tick(dt: number): void {
         dt = dt * this.#timeScale;
+
+        // update physics
         this.#world.tick(dt);
+
+        // update entities
+        for (let i = 0; i < this.#entities.length; i++) {
+            const entity = this.#entities[i]!;
+            entity.tick(dt);
+        }
     }
 
     destroy(): void {

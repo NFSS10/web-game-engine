@@ -7,22 +7,27 @@ import { Scene } from "@src/scene";
 import { Utils } from "@src/utils";
 import { type CreateBodyOptions, type EntityOptions } from "./types";
 import { ObjectUtils } from "./utils";
+import { Animator } from "./animator";
 
 class Entity {
     #id: string;
     #object: THREE.Object3D;
-    #bodies: Body[];
     #size: Size;
+    #bodies: Body[];
     #isPhysicsEnabled: boolean;
+
+    #animator: Animator;
 
     sceneRef?: Scene;
 
     constructor(object: THREE.Object3D, options?: EntityOptions) {
         this.#id = options?.id ?? Utils.generateUUID();
         this.#object = object;
+        this.#size = { x: -1, y: -1, z: -1 };
         this.#bodies = [];
         this.#isPhysicsEnabled = false;
-        this.#size = { x: -1, y: -1, z: -1 };
+
+        this.#animator = new Animator(this.#object);
     }
 
     get id(): string {
@@ -43,6 +48,10 @@ class Entity {
 
     get isPhysicsEnabled(): boolean {
         return this.#isPhysicsEnabled;
+    }
+
+    get Animator(): Animator {
+        return this.#animator;
     }
 
     enablePhysics(options?: CreateBodyOptions): Entity {
@@ -84,6 +93,11 @@ class Entity {
 
         // @ts-expect-error Ensure this is destroyed
         this.#id = null;
+    }
+
+    tick(dt: number): void {
+        // update animations
+        this.#animator.tick(dt);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
