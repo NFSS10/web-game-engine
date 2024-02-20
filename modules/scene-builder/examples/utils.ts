@@ -31,7 +31,7 @@ const addEnvironment = async (scene: Scene): Promise<void> => {
     scene.scene.environment = envTexture;
     scene.scene.background = envTexture;
 
-    // add directional light to simulate sun casting shadows
+    // add directional light to simulate the sun casting shadows
     const directLight = new THREE.DirectionalLight(0xffffff, 1);
     directLight.position.set(40, 40, 40);
     directLight.lookAt(0, 0, 0);
@@ -42,12 +42,9 @@ const addEnvironment = async (scene: Scene): Promise<void> => {
     directLight.shadow.camera.bottom = -20;
     directLight.shadow.camera.near = 0.5;
     directLight.shadow.camera.far = 100;
-    directLight.shadow.mapSize.width = 2048; // default is 512
-    directLight.shadow.mapSize.height = 2048; // de
+    directLight.shadow.mapSize.width = 2048;
+    directLight.shadow.mapSize.height = 2048;
     scene.scene.add(directLight);
-
-    const helper = new THREE.CameraHelper(directLight.shadow.camera);
-    scene.scene.add(helper);
 };
 
 export { addFloor, addEnvironment };
