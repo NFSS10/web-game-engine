@@ -28,13 +28,13 @@ class SceneBuilder extends Module {
         const scene = new Scene(options?.id);
         switch (example) {
             case Example.Primitives:
-                return buildPrimitivesScene(scene, entityBuilder);
+                return await buildPrimitivesScene(scene, entityBuilder);
             case Example.Debugger:
                 return buildDebuggerScene(scene, entityBuilder);
             case Example.Car:
-                return buildCarScene(scene, entityBuilder);
+                return await buildCarScene(scene, entityBuilder);
             case Example.TestCharacter:
-                return buildTestCharacterScene(scene, entityBuilder);
+                return await buildTestCharacterScene(scene, entityBuilder);
             case Example.Character:
                 return await buildCharacterScene(scene, entityBuilder);
             default:

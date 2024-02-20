@@ -1,22 +1,26 @@
 import * as THREE from "three";
 
 import { type EntityBuilder } from "@modules";
-import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
 import { AssetLoader } from "@src/loaders";
 import { type Scene } from "@src/scene";
+import { addEnvironment, addFloor } from "./utils";
 
 const buildCharacterScene = async (scene: Scene, entityBuilder: EntityBuilder): Promise<Scene> => {
-    // creates a static floor
-    const floor = entityBuilder.createPrimitive(PrimitiveType.Cube, { id: "floor" });
-    floor.object.scale.set(50, 0.1, 50); // scales the floor
-    floor.object.position.set(0, -3, 0); // positions the floor
-    floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-    scene.addEntity(floor);
+    // floor setup
+    addFloor(scene, entityBuilder);
+
+    // scene environment setup
+    await addEnvironment(scene);
 
     const characterMesh = await AssetLoader.loadFBX(
         "https://cdn-static-nfss10.netlify.app/web-game-engine/assets/characters/models/y-bot.fbx"
     );
     characterMesh.scale.set(0.015, 0.015, 0.015);
+
+    // make the character cast shadows
+    characterMesh.traverse(child => {
+        if (child instanceof THREE.Mesh) child.castShadow = true;
+    });
 
     // change character mesh origin
     const characterNode = new THREE.Object3D();

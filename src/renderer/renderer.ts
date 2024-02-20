@@ -19,6 +19,7 @@ class Renderer {
         this.#renderer = new THREE.WebGLRenderer({ antialias: antialias, alpha: alpha });
         this.#renderer.setSize(width, height);
         this.#renderer.setPixelRatio(window.devicePixelRatio);
+        this.#renderer.shadowMap.enabled = true;
 
         // tone mapping
         this.#renderer.toneMapping = THREE.ACESFilmicToneMapping;

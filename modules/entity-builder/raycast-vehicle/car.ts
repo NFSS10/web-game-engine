@@ -89,14 +89,14 @@ class Car extends RaycastVehicleEntity {
 const createChassis = (): THREE.Object3D => {
     const chassis = new THREE.Object3D();
 
-    const material = new THREE.MeshNormalMaterial();
-
     const baseGeo = new THREE.BoxGeometry(2, 1, 5);
-    const baseMesh = new THREE.Mesh(baseGeo, material);
+    const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x020035, metalness: 1, roughness: 0.15 });
+    const baseMesh = new THREE.Mesh(baseGeo, baseMaterial);
     chassis.add(baseMesh);
 
-    const topGeo = new THREE.BoxGeometry(2, 0.75, 3);
-    const topMesh = new THREE.Mesh(topGeo, material);
+    const topGeo = new THREE.BoxGeometry(1.9, 0.75, 3);
+    const topMaterial = new THREE.MeshStandardMaterial({ color: 0xd1dfe7, metalness: 1, roughness: 0.25 });
+    const topMesh = new THREE.Mesh(topGeo, topMaterial);
     topMesh.position.set(0, 0.75, -0.5);
     chassis.add(topMesh);
 
@@ -106,7 +106,7 @@ const createChassis = (): THREE.Object3D => {
 const createWheel = (): THREE.Object3D => {
     const geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
     geometry.rotateZ(Math.PI / 2);
-    const material = new THREE.MeshNormalMaterial();
+    const material = new THREE.MeshStandardMaterial({ color: 0x292929 });
     const mesh = new THREE.Mesh(geometry, material);
     return mesh;
 };
