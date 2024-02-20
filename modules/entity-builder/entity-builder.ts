@@ -1,5 +1,5 @@
 import { Module } from "@modules";
-import { type Entity } from "@src/entity";
+import { Entity } from "@src/entity";
 import { type EntityOptions } from "@src/entity/types";
 import { Car } from "./raycast-vehicle";
 import { Character, TestCharacter } from "./kinematic-character";
@@ -14,6 +14,10 @@ class EntityBuilder extends Module {
 
     get supportedPrimitives(): string[] {
         return Object.values(PrimitiveType);
+    }
+
+    createEntity(object: THREE.Object3D, options?: EntityOptions): Entity {
+        return new Entity(object, options);
     }
 
     createPrimitive(type: PrimitiveType, options?: EntityBuilderOptions): Entity {
