@@ -1,18 +1,21 @@
+import * as THREE from "three";
+
 import { type EntityBuilder } from "@modules";
 import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
 import { type Scene } from "@src/scene";
+import { addFloor, addEnvironment } from "./utils";
 
-const buildTestCharacterScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
-    // creates a static floor
-    const floor = entityBuilder.createPrimitive(PrimitiveType.Cube, { id: "floor" });
-    floor.object.scale.set(50, 0.1, 50); // scales the floor
-    floor.object.position.set(0, -3, 0); // positions the floor
-    floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-    scene.addEntity(floor);
+const buildTestCharacterScene = async (scene: Scene, entityBuilder: EntityBuilder): Promise<Scene> => {
+    // floor setup
+    addFloor(scene, entityBuilder);
+
+    // scene environment setup
+    await addEnvironment(scene);
 
     // creates random boxes
     for (let i = 0; i < 30; i++) {
         const box = entityBuilder.createPrimitive(PrimitiveType.Cube, { id: `box-${i}` });
+        (box.object as THREE.Mesh).castShadow = true;
         box.object.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 10 - 5);
         box.enablePhysics();
         scene.addEntity(box);
@@ -22,6 +25,9 @@ const buildTestCharacterScene = (scene: Scene, entityBuilder: EntityBuilder): Sc
     const character = entityBuilder.createTestCharacter({ id: "character" });
     character.enablePhysics();
     scene.addEntity(character);
+
+    // make the character cast shadows
+    (character.object as THREE.Mesh).castShadow = true;
 
     // example of basic character controls
     const keys: Record<string, boolean> = { w: false, a: false, s: false, d: false, space: false };

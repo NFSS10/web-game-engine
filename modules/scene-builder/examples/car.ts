@@ -1,20 +1,26 @@
-import { type EntityBuilder } from "@modules";
-import { PrimitiveType } from "@modules/entity-builder/primitives/enums";
-import { type Scene } from "@src/scene";
+import * as THREE from "three";
 
-const buildCarScene = (scene: Scene, entityBuilder: EntityBuilder): Scene => {
-    // creates a static floor
-    const floor = entityBuilder.createPrimitive(PrimitiveType.Cube, { id: "floor" });
-    floor.object.scale.set(50, 0.1, 50); // scales the floor
-    floor.object.position.set(0, -3, 0); // positions the floor
-    floor.enablePhysics({ mass: 0 }); // setting the mass to 0 makes the object static
-    scene.addEntity(floor);
+import { type EntityBuilder } from "@modules";
+import { type Scene } from "@src/scene";
+import { addFloor, addEnvironment } from "./utils";
+
+const buildCarScene = async (scene: Scene, entityBuilder: EntityBuilder): Promise<Scene> => {
+    // floor setup
+    addFloor(scene, entityBuilder);
+
+    // scene environment setup
+    await addEnvironment(scene);
 
     // creates a car entity
     const car = entityBuilder.createRaycastVehicle({ id: "car" });
     car.object.position.set(0, -1.25, 0); // positions the car on top of the floor
     car.enablePhysics();
     scene.addEntity(car);
+
+    // make the car cast shadows
+    car.object.traverse(child => {
+        if (child instanceof THREE.Mesh) child.castShadow = true;
+    });
 
     // example of basic controls for the car
     const keys: Record<string, boolean> = { w: false, a: false, s: false, d: false, space: false };
