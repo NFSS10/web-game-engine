@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: write
 
-  build-bundle:
+  deploy-bundle:
     needs: [check]
     runs-on: ubuntu-latest
     permissions:
@@ -37,6 +37,10 @@ jobs:
       - name: List artifact contents
         run: ls -R ./artifacts
 
+      - name: Upload to CDN
+        shell: bash
+        run: ./.github/scripts/bundle-upload.sh ./artifacts ${{ secrets.CDN_EMAIL }} ${{ secrets.CDN_USERNAME }} ${{ secrets.CDN_TOKEN }} ${{ secrets.CDN_REPO }} ${{ secrets.CDN_FOLDER }}
+
       - name: Cache artifacts
         uses: actions/cache@v3
         with:
@@ -45,7 +49,7 @@ jobs:
           enableCrossOsArchive: true
 
   create-release:
-    needs: [check, build-bundle]
+    needs: [check, deploy-bundle]
     runs-on: ubuntu-latest
     permissions:
       contents: write
